@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <color name="red">#660B05</color>
+    <color name="green">#005461</color>
+    <color name="gray">#BFC9D1</color>
+    <color name="black">#021526</color>
+
+</resources>
