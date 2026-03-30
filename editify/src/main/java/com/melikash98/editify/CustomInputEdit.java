@@ -94,7 +94,7 @@ public class CustomInputEdit extends ConstraintLayout {
             boolean shouldFloat = isFocus || isActive;
 
             float targetY = shouldFloat
-                    ? -((editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f)) - dp(3)
+                    ? -((editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f)) - dp(18)
                     : 0f;
 
             hintLayout.animate().cancel();
