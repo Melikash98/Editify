@@ -14,7 +14,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +25,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 public class CustomInputEdit extends ConstraintLayout {
     private AppCompatEditText editInput;
     private ConstraintLayout hintLayout;
+    private ConstraintLayout containerLayout;
     private ImageView hintIcon;
     private TextView hintTextView;
 
@@ -36,6 +40,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
     private boolean isFocus = false;
     private boolean isActive = false;
+    private boolean isRightDirection = false;
 
 
     public CustomInputEdit(@NonNull Context context) {
@@ -56,7 +61,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
         editInput = findViewById(R.id.editInput);
         hintLayout = findViewById(R.id.hintLayout);
-        hintIcon= findViewById(R.id.iconStart);
+        hintIcon = findViewById(R.id.iconStart);
         hintTextView = findViewById(R.id.hintText);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
@@ -67,10 +72,17 @@ public class CustomInputEdit extends ConstraintLayout {
 
         activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
-        if (activeBackground == null) activeBackground = context.getDrawable(R.drawable.input_active);
-        if (inactiveBackground == null) inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+        if (activeBackground == null)
+            activeBackground = context.getDrawable(R.drawable.input_active);
+        if (inactiveBackground == null)
+            inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+
+        isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
 
         array.recycle();
+
+        setupDirectionConstraints();
+
         editInput.setBackground(inactiveBackground);
         editInput.setOnFocusChangeListener((v, hasFocus) -> {
             isFocus = hasFocus;
@@ -78,15 +90,72 @@ public class CustomInputEdit extends ConstraintLayout {
             updateHintPosition();
         });
         editInput.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(Editable s) {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 isActive = s.length() > 0;
                 updateHintPosition();
             }
         });
         hintLayout.bringToFront();
         post(this::updateUIState);
+    }
+
+    private void setupDirectionConstraints() {
+        ConstraintSet containerSet = new ConstraintSet();
+        containerSet.clone(containerLayout);
+
+        containerSet.clear(R.id.hintLayout, ConstraintSet.START);
+        containerSet.clear(R.id.hintLayout, ConstraintSet.END);
+
+        if (isRightDirection) {
+            containerSet.connect(R.id.hintLayout, ConstraintSet.END, R.id.editInput, ConstraintSet.END, (int) dp(10));
+        } else {
+            containerSet.connect(R.id.hintLayout, ConstraintSet.START, R.id.editInput, ConstraintSet.START, (int) dp(10));
+        }
+
+        containerSet.connect(R.id.hintLayout, ConstraintSet.TOP, R.id.editInput, ConstraintSet.TOP, 0);
+        containerSet.connect(R.id.hintLayout, ConstraintSet.BOTTOM, R.id.editInput, ConstraintSet.BOTTOM, 0);
+        containerSet.applyTo(containerLayout);
+
+        ConstraintSet hintSet = new ConstraintSet();
+        hintSet.clone(hintLayout);
+
+        hintSet.clear(R.id.iconStart, ConstraintSet.START);
+        hintSet.clear(R.id.iconStart, ConstraintSet.END);
+        hintSet.clear(R.id.hintText, ConstraintSet.START);
+        hintSet.clear(R.id.hintText, ConstraintSet.END);
+
+        if (isRightDirection) {
+            hintSet.connect(R.id.iconStart, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+            hintSet.connect(R.id.hintText, ConstraintSet.END, R.id.iconStart, ConstraintSet.START, (int) dp(10));
+            hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
+            hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+            hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+        } else {
+            // LTR: مثل قبل
+            hintSet.connect(R.id.iconStart, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
+            hintSet.connect(R.id.hintText, ConstraintSet.START, R.id.iconStart, ConstraintSet.END, (int) dp(10));
+            hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
+            hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+            hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+        }
+        hintSet.applyTo(hintLayout);
+
+        if (isRightDirection) {
+            editInput.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+            editInput.setTextDirection(View.TEXT_DIRECTION_RTL);
+        } else {
+            editInput.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+            editInput.setTextDirection(View.TEXT_DIRECTION_LTR);
+        }
     }
 
     private void updateUIState() {
@@ -118,6 +187,7 @@ public class CustomInputEdit extends ConstraintLayout {
                     .start();
         });
     }
+
     private float dp(float value) {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
