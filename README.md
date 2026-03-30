@@ -188,7 +188,12 @@ https://your-video-link.com
 ---
 
 ## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License
+
+Copyright 2025 Melika Sh (Melikash98)
+
+This project is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 ---
 
 ## 👩‍💻 Author
