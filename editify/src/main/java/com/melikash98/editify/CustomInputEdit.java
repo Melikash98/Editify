@@ -100,10 +100,21 @@ public class CustomInputEdit extends ConstraintLayout {
         errorIconView = findViewById(R.id.errorIcon);
         errorTextView = findViewById(R.id.errorText);
         helperBack = findViewById(R.id.helperBack);
-        wrongBack  = findViewById(R.id.wrongBack);
-        errorBack  = findViewById(R.id.errorBack);
+        wrongBack = findViewById(R.id.wrongBack);
+        errorBack = findViewById(R.id.errorBack);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
+
+        // ==================== DOM ====================
+        isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
+        activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
+        inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
+        if (activeBackground == null)
+            activeBackground = context.getDrawable(R.drawable.input_active);
+        if (inactiveBackground == null)
+            inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+
+        // ==================== Hint ====================
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
         if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
@@ -117,23 +128,6 @@ public class CustomInputEdit extends ConstraintLayout {
             Typeface hintTypeface = Typeface.create(hintFamily, Typeface.NORMAL);
             hintTextView.setTypeface(hintTypeface);
         }
-        float inputSize = array.getDimension(R.styleable.CustomInputField_inputSize, 0);
-        if (inputSize > 0) {
-            editInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputSize);
-        }
-        String inputFamily = array.getString(R.styleable.CustomInputField_inputFamily);
-        if (!TextUtils.isEmpty(inputFamily)) {
-            Typeface inputTypeface = Typeface.create(inputFamily, Typeface.NORMAL);
-            editInput.setTypeface(inputTypeface);
-        }
-        String inputText = array.getString(R.styleable.CustomInputField_input);
-        if (!TextUtils.isEmpty(inputText)) {
-            editInput.setText(inputText);
-        }
-        int editTextColor = array.getColor(R.styleable.CustomInputField_inputColor,
-                array.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
-        editInput.setTextColor(editTextColor);
-        isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
         hintDefaultColor = array.getColor(
                 R.styleable.CustomInputField_hintColor,
                 hintTextView.getCurrentTextColor()
@@ -151,18 +145,26 @@ public class CustomInputEdit extends ConstraintLayout {
             hintBackground.setTint(hintBgColor);
         }
         hintLayout.setBackground(hintBackground);
-        activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
-        inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
-        if (activeBackground == null)
-            activeBackground = context.getDrawable(R.drawable.input_active);
-        if (inactiveBackground == null)
-            inactiveBackground = context.getDrawable(R.drawable.input_inactive);
 
-        passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
-        passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
-        passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
-        int inputType = array.getInt(R.styleable.CustomInputField_inputType,
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        // ==================== Inputs ====================
+        float inputSize = array.getDimension(R.styleable.CustomInputField_inputSize, 0);
+        if (inputSize > 0) {
+            editInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputSize);
+        }
+        String inputFamily = array.getString(R.styleable.CustomInputField_inputFamily);
+        if (!TextUtils.isEmpty(inputFamily)) {
+            Typeface inputTypeface = Typeface.create(inputFamily, Typeface.NORMAL);
+            editInput.setTypeface(inputTypeface);
+        }
+        String inputText = array.getString(R.styleable.CustomInputField_input);
+        if (!TextUtils.isEmpty(inputText)) {
+            editInput.setText(inputText);
+        }
+        int editTextColor = array.getColor(R.styleable.CustomInputField_inputColor,
+                array.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
+        editInput.setTextColor(editTextColor);
+
+        // ==================== Helpers ====================
         helperColor = array.getColor(R.styleable.CustomInputField_helperColor, getResources().getColor(R.color.green));
         warningColor = array.getColor(R.styleable.CustomInputField_warningColor, getResources().getColor(R.color.yellow));
         errorColor = array.getColor(R.styleable.CustomInputField_errorColor, getResources().getColor(R.color.red));
@@ -174,7 +176,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
         if (!TextUtils.isEmpty(hText)) {
             helperTextView.setText(hText);
-            helperBack.setVisibility(View.VISIBLE);   // ← مهم!
+            helperBack.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(wText)) {
             warningTextView.setText(wText);
@@ -206,6 +208,12 @@ public class CustomInputEdit extends ConstraintLayout {
 
         applyHelperColors();
 
+        // ==================== Password ====================
+        passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
+        passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
+        passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
+        int inputType = array.getInt(R.styleable.CustomInputField_inputType,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
 
         array.recycle();
 
@@ -355,8 +363,35 @@ public class CustomInputEdit extends ConstraintLayout {
         } else {
             hintLayout.setPadding(10, 0, (int) dp(30), 0);
         }
+        setupHelperDirection(helperBack, R.id.helperIcon, R.id.helperText);
+        setupHelperDirection(wrongBack, R.id.warningIcon, R.id.warningText);
+        setupHelperDirection(errorBack, R.id.errorIcon, R.id.errorText);
     }
+    private void setupHelperDirection(ConstraintLayout parent, int iconId, int textId) {
+        if (parent == null) return;
+        ConstraintSet set = new ConstraintSet();
+        set.clone(parent);
 
+        set.clear(iconId, ConstraintSet.START);
+        set.clear(iconId, ConstraintSet.END);
+        set.clear(textId, ConstraintSet.START);
+        set.clear(textId, ConstraintSet.END);
+
+        if (isRightDirection) {
+            set.connect(iconId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+            set.connect(textId, ConstraintSet.END, iconId, ConstraintSet.START, (int) dp(15));
+        } else {
+            set.connect(iconId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
+            set.connect(textId, ConstraintSet.START, iconId, ConstraintSet.END, (int) dp(15));
+        }
+
+        set.connect(textId, ConstraintSet.TOP, iconId, ConstraintSet.TOP, 0);
+        set.connect(textId, ConstraintSet.BOTTOM, iconId, ConstraintSet.BOTTOM, 0);
+        set.connect(iconId, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+        set.connect(iconId, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+
+        set.applyTo(parent);
+    }
     private void updateUIState() {
         boolean shouldActivate = isFocus || isActive;
         editInput.setBackground(shouldActivate ? activeBackground : inactiveBackground);
