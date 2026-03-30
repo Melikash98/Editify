@@ -32,11 +32,11 @@
 
         <!-- Fonts and Size -->
         <attr name="hintSize" format="dimension" />
-        <attr name="hintFamily" format="string" />
+        <attr name="hintFamily" format="string|reference" />
         <attr name="inputSize" format="dimension" />
-        <attr name="inputFamily" format="string" />
-        <attr name="helperSize" format="color" />
-        <attr name="helperFamily" format="color" />
+        <attr name="inputFamily" format="string|reference" />
+        <attr name="helperSize" format="dimension" />
+        <attr name="helperFamily" format="string|reference"/>
 
         <!-- Style -->
         <attr name="inputType" format="integer" />

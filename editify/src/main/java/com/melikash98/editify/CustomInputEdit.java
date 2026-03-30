@@ -319,5 +319,24 @@ public class CustomInputEdit extends ConstraintLayout {
     public void setText(String text) {
         editInput.setText(text);
     }
+    public void setHelperText(String text) {
+        if (helperTextView != null) {
+            helperTextView.setText(text != null ? text : "");
+            helperTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        }
+    }
 
+    public void setWarningText(String text) {
+        if (warningTextView != null) {
+            warningTextView.setText(text != null ? text : "");
+            warningTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    public void setErrorText(String text) {
+        if (errorTextView != null) {
+            errorTextView.setText(text != null ? text : "");
+            errorTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        }
+    }
 }
