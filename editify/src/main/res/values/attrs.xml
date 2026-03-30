@@ -30,8 +30,10 @@
         <attr name="inputFamily" format="string" />
 
         <!-- Style -->
-        <attr name="rightDirection" format="boolean"/>
+        <attr name="inputType" format="integer" />
+
         <!--right and left -->
+        <attr name="rightDirection" format="boolean"/>
 
     </declare-styleable>
 </resources>

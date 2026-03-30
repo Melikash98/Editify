@@ -134,6 +134,9 @@ public class CustomInputEdit extends ConstraintLayout {
         passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
         passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
 
+        int inputType = array.getInt(R.styleable.CustomInputField_inputType,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        editInput.setInputType(inputType);
         array.recycle();
 
         setupDirectionConstraints();
@@ -163,18 +166,19 @@ public class CustomInputEdit extends ConstraintLayout {
         setupPasswordToggle();
         
         hintLayout.bringToFront();
+        iconPass.bringToFront();
         post(this::updateUIState);
     }
 
     private void setupPasswordToggle() {
         if (passShowDrawable == null || passHideDrawable == null) return;
 
-        int inputType = editInput.getInputType();
-        boolean isPasswordInput = (inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD) != 0 ||
-                (inputType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) != 0 ||
-                (inputType & InputType.TYPE_NUMBER_VARIATION_PASSWORD) != 0;
+        int currentType = editInput.getInputType();
+        boolean isPassword = (currentType & InputType.TYPE_TEXT_VARIATION_PASSWORD) != 0 ||
+                (currentType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) != 0 ||
+                (currentType & InputType.TYPE_NUMBER_VARIATION_PASSWORD) != 0;
 
-        if (isPasswordInput) {
+        if (isPassword) {
             iconPass.setVisibility(View.VISIBLE);
             iconPass.setImageDrawable(passHideDrawable);
             iconPass.setOnClickListener(v -> togglePasswordVisibility());
@@ -193,7 +197,6 @@ public class CustomInputEdit extends ConstraintLayout {
             editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             iconPass.setImageDrawable(passHideDrawable);
         }
-
         editInput.setSelection(editInput.getText().length());
     }
 
