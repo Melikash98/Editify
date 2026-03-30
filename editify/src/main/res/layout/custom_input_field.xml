@@ -74,6 +74,102 @@
             app:layout_constraintBottom_toBottomOf="@id/hintLayout"
             android:src="@drawable/icons"
             android:tint="@color/black"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/helperBack"
+            android:layout_width="wrap_content"
+            android:maxWidth="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/editInput"
+            app:layout_constraintTop_toBottomOf="@id/editInput">
+
+            <ImageView
+                android:id="@+id/helpIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/helper"
+                android:backgroundTint="@color/green"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/helperText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="Helper"
+                android:textColor="@color/green"
+                android:textFontWeight="800"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/helpIcon"
+                app:layout_constraintStart_toEndOf="@id/helpIcon"
+                app:layout_constraintTop_toTopOf="@id/helpIcon"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/wrongBack"
+            android:layout_width="wrap_content"
+            android:maxWidth="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/editInput"
+            app:layout_constraintTop_toBottomOf="@id/editInput">
+
+            <ImageView
+                android:id="@+id/warningIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/warning"
+                android:backgroundTint="@color/yellow" />
+
+            <TextView
+                android:id="@+id/warningText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="Warning"
+                android:textColor="@color/yellow"
+                android:textFontWeight="800"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/warningIcon"
+                app:layout_constraintStart_toEndOf="@id/warningIcon"
+                app:layout_constraintTop_toTopOf="@id/warningIcon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/errorBack"
+            android:layout_width="wrap_content"
+            android:maxWidth="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/editInput"
+            app:layout_constraintTop_toBottomOf="@id/editInput">
+
+            <ImageView
+                android:id="@+id/errorIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_error"
+                android:backgroundTint="@color/red"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="Error"
+                android:textColor="@color/red"
+                android:textFontWeight="800"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@id/errorIcon"
+                app:layout_constraintStart_toEndOf="@id/errorIcon"
+                app:layout_constraintTop_toTopOf="@id/errorIcon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
