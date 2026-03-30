@@ -65,11 +65,8 @@ public class CustomInputEdit extends ConstraintLayout {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
 
-        hintStr = a.getString(R.styleable.CustomInputField_hint);
+        hintStr = a.getString(R.styleable.CustomInputField_hintText);
         if (hintStr != null) hintText.setText(hintStr);
-
-        String initialText = a.getString(R.styleable.CustomInputField_text);
-        if (initialText != null) editInput.setText(initialText);
 
         activeBackground = a.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = a.getDrawable(R.styleable.CustomInputField_inactiveBackground);
@@ -86,7 +83,7 @@ public class CustomInputEdit extends ConstraintLayout {
         hintText.setTextColor(inactiveHintColor);
         editInput.setTextColor(a.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
 
-        Drawable startIcon = a.getDrawable(R.styleable.CustomInputField_startIcon);
+        Drawable startIcon = a.getDrawable(R.styleable.CustomInputField_hintIcon);
         if (startIcon != null) {
             iconStart.setImageDrawable(startIcon);
         }
@@ -95,8 +92,6 @@ public class CustomInputEdit extends ConstraintLayout {
             iconEnd.setImageDrawable(endIcon);
             iconEnd.setVisibility(VISIBLE);
         }
-
-        showPasswordToggle = a.getBoolean(R.styleable.CustomInputField_showPasswordToggle, false);
 
         a.recycle();
 
@@ -179,7 +174,7 @@ public class CustomInputEdit extends ConstraintLayout {
         animateColor(hintText, inactiveHintColor, activeHintColor, 260);
     }
 
-    private void animateColor(final TextView view, int fromColor, int toColor, long duration) {
+    private void animateColor(TextView view, int fromColor, int toColor, int duration) {
         ValueAnimator colorAnim = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
         colorAnim.setDuration(duration);
         colorAnim.addUpdateListener(animation -> view.setTextColor((int) animation.getAnimatedValue()));

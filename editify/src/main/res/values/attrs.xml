@@ -2,14 +2,12 @@
 <resources>
     <declare-styleable name="CustomInputField">
         <!-- متن و hint -->
-        <attr name="hint" format="string" />
-        <attr name="text" format="string" />
+        <attr name="hintText" format="string" />
 
         <!-- آیکون‌ها -->
-        <attr name="startIcon" format="reference" />
+        <attr name="hintIcon" format="reference" />
         <attr name="endIcon" format="reference" />
-        <attr name="showPasswordToggle" default="false" format="boolean" />
-        <attr name="passwordToggleIcon" format="reference" />
+
         <!-- background -->
         <attr name="activeBackground" format="reference" />
         <attr name="inactiveBackground" format="reference" />
@@ -17,9 +15,6 @@
         <!-- رنگ‌ها -->
         <attr name="hintColor" format="color" />
         <attr name="textColor" format="color" />
-        <attr name="iconColor" format="color" />
-        <attr name="helperErrorColor" format="color" />
-        <attr name="helperSuccessColor" format="color" />
 
         <!-- فونت و اندازه -->
         <attr name="textSize" format="dimension" />
