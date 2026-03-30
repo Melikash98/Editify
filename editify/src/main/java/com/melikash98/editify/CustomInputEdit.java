@@ -99,7 +99,7 @@ public class CustomInputEdit extends ConstraintLayout {
             float distanceToTop = (editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f);
 
             // یه مقدار خیلی کم برای اینکه دقیق روی خط بشینه
-            float adjust = dp(12);
+            float adjust = dp(14);
 
             float targetY = shouldFloat
                     ? -(distanceToTop + adjust)   // بره روی خط
