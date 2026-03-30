@@ -93,15 +93,20 @@ public class CustomInputEdit extends ConstraintLayout {
         hintLayout.post(() -> {
             boolean shouldFloat = isFocus || isActive;
 
-            float targetY = shouldFloat
-                    ? -((editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f)) - dp(18)
-                    : 0f;
+            float targetY;
+            if (shouldFloat) {
+                float centeredTop = (editInput.getHeight() - hintLayout.getHeight()) / 2f;
+                float overlap = dp(16); // کمی بیشتر تا دقیق روی border بنشیند
+                targetY = -(centeredTop + overlap);
+            } else {
+                targetY = 0f; // وسط
+            }
 
             hintLayout.animate().cancel();
             hintLayout.animate()
                     .translationY(targetY)
                     .scaleX(shouldFloat ? 0.92f : 1f)
-                    .scaleY(1f)
+                    .scaleY(1f)   // مهم: عمودی را فشرده نکن
                     .setDuration(220)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .start();
