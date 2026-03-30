@@ -78,8 +78,14 @@ public class CustomInputEdit extends ConstraintLayout {
             hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
         }
         isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
-        hintDefaultColor = hintTextView.getCurrentTextColor();
-        if (hintActiveColor == 0) hintActiveColor = hintDefaultColor;
+        hintDefaultColor = array.getColor(
+                R.styleable.CustomInputField_hintColor,
+                hintTextView.getCurrentTextColor()
+        );
+        hintActiveColor = array.getColor(
+                R.styleable.CustomInputField_hintActiveColor,
+                hintDefaultColor
+        );
 
         activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
@@ -135,7 +141,6 @@ public class CustomInputEdit extends ConstraintLayout {
         containerSet.connect(R.id.hintLayout, ConstraintSet.BOTTOM, R.id.editInput, ConstraintSet.BOTTOM, 0);
         containerSet.applyTo(containerLayout);
 
-        // Internal order of icon + text
         ConstraintSet hintSet = new ConstraintSet();
         hintSet.clone(hintLayout);
 
@@ -156,7 +161,6 @@ public class CustomInputEdit extends ConstraintLayout {
         hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
         hintSet.applyTo(hintLayout);
 
-        // EditText gravity
         if (isRightDirection) {
             editInput.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
             editInput.setTextDirection(View.TEXT_DIRECTION_RTL);
@@ -166,9 +170,9 @@ public class CustomInputEdit extends ConstraintLayout {
         }
 
         if (isRightDirection) {
-            hintLayout.setPadding((int) dp(30), 0, 0, 0);
+            hintLayout.setPadding((int) dp(30), 0, 10, 0);
         } else {
-            hintLayout.setPadding(0, 0, (int) dp(30), 0);
+            hintLayout.setPadding(10, 0, (int) dp(30), 0);
         }
     }
 
