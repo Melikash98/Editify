@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -77,6 +78,21 @@ public class CustomInputEdit extends ConstraintLayout {
         if (hintSize > 0) {
             hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
         }
+        String hintFamily = array.getString(R.styleable.CustomInputField_hintFamily);
+        if (!TextUtils.isEmpty(hintFamily)) {
+            Typeface hintTypeface = Typeface.create(hintFamily, Typeface.NORMAL);
+            hintTextView.setTypeface(hintTypeface);
+        }
+        float inputSize = array.getDimension(R.styleable.CustomInputField_inputSize, 0);
+        if (inputSize > 0) {
+            editInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputSize);
+        }
+        String inputFamily = array.getString(R.styleable.CustomInputField_inputFamily);
+        if (!TextUtils.isEmpty(inputFamily)) {
+            Typeface inputTypeface = Typeface.create(inputFamily, Typeface.NORMAL);
+            editInput.setTypeface(inputTypeface);
+        }
+
         isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
         hintDefaultColor = array.getColor(
                 R.styleable.CustomInputField_hintColor,
