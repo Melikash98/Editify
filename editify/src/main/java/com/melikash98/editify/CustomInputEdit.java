@@ -32,6 +32,8 @@ public class CustomInputEdit extends ConstraintLayout {
 
     private Drawable activeBackground;
     private Drawable inactiveBackground;
+
+    private boolean isFocus = false;
     private boolean isActive = false;
 
 
@@ -56,10 +58,58 @@ public class CustomInputEdit extends ConstraintLayout {
         hintIcon= findViewById(R.id.iconStart);
         hintTextView = findViewById(R.id.hintText);
 
-        inactiveBackground = context.getDrawable(R.drawable.input_inactive);
-        activeBackground = context.getDrawable(R.drawable.input_active);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
+        hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
+        if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
+            hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
+        }
 
+        activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
+        inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
+        if (activeBackground == null) activeBackground = context.getDrawable(R.drawable.input_active);
+        if (inactiveBackground == null) inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+
+        array.recycle();
+        editInput.setBackground(inactiveBackground);
+        editInput.setOnFocusChangeListener((v, hasFocus) -> {
+            isFocus = hasFocus;
+            if (hasFocus) editInput.setBackground(activeBackground);
+            updateHintPosition();
+        });
+        editInput.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                isActive = s.length() > 0;
+                updateHintPosition();
+            }
+        });
+        updateHintPosition();
     }
 
+    private void updateHintPosition() {
+        boolean shouldFloat = isFocus || isActive;
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(
+                hintLayout, "translationY", shouldFloat ? -26f : 8f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(
+                hintLayout, "scaleX", shouldFloat ? 0.88f : 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(
+                hintLayout, "scaleY", shouldFloat ? 0.88f : 1f);
+
+        animatorSet.playTogether(translateY, scaleX, scaleY);
+        animatorSet.setDuration(220);
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.start();
+    }
+    public String getText() {
+        return editInput.getText().toString().trim();
+    }
+
+    public void setText(String text) {
+        editInput.setText(text);
+    }
 
 }

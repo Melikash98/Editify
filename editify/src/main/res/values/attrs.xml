@@ -24,6 +24,7 @@
         <attr name="inputSize" format="dimension" />
         <attr name="inputFamily" format="string" />
 
+        <!-- Style -->
         <!--right and left -->
 
     </declare-styleable>
