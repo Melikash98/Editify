@@ -148,7 +148,6 @@ public class CustomInputEdit extends ConstraintLayout {
             hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
             hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
         } else {
-            // LTR: مثل قبل
             hintSet.connect(R.id.iconStart, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
             hintSet.connect(R.id.hintText, ConstraintSet.START, R.id.iconStart, ConstraintSet.END, (int) dp(10));
             hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
