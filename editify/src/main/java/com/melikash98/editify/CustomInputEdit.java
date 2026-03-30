@@ -101,7 +101,7 @@ public class CustomInputEdit extends ConstraintLayout {
             hintLayout.animate()
                     .translationY(targetY)
                     .scaleX(shouldFloat ? 0.92f : 1f)
-                    .scaleY(1f)   // مهم: عمودی را فشرده نکن
+                    .scaleY(1f)
                     .setDuration(220)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .start();

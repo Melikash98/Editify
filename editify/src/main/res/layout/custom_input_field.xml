@@ -4,72 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/editInput"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/input_inactive"
-            android:paddingStart="15dp"
-            android:paddingTop="15dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical|start"
+            android:textDirection="rtl"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/hintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:background="@drawable/hint_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:layoutDirection="ltr"
-            android:paddingStart="12dp"
-            android:paddingTop="7dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="7dp"
-            app:layout_constraintBottom_toBottomOf="@id/editInput"
             app:layout_constraintStart_toStartOf="@id/editInput"
-            app:layout_constraintTop_toTopOf="@id/editInput">
+            app:layout_constraintTop_toTopOf="@id/editInput"
+            app:layout_constraintBottom_toBottomOf="@id/editInput">
 
             <ImageView
                 android:id="@+id/iconStart"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icons"
-                android:tint="@color/gray"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:src="@drawable/icons"
+                android:tint="@color/gray"/>
 
             <TextView
                 android:id="@+id/hintText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:gravity="center_vertical"
-                android:includeFontPadding="false"
                 android:text="Hint"
+                android:textAlignment="center"
                 android:textColor="@color/gray"
-                android:textDirection="rtl"
                 android:textFontWeight="800"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iconStart"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/iconStart" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
