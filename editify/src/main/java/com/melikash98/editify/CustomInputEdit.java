@@ -37,6 +37,12 @@ public class CustomInputEdit extends ConstraintLayout {
     private ImageView hintIcon;
     private TextView hintTextView;
     private ImageView iconPass;
+    private ImageView helperIconView;
+    private TextView helperTextView;
+    private ImageView warningIconView;
+    private TextView warningTextView;
+    private ImageView errorIconView;
+    private TextView errorTextView;
 
     private Drawable activeBackground;
     private Drawable inactiveBackground;
@@ -47,6 +53,13 @@ public class CustomInputEdit extends ConstraintLayout {
     private int hintDefaultColor;
     private int hintActiveColor;
     private int passIconColor;
+    private int helperColor;
+    private int warningColor;
+    private int errorColor;
+    private float helperTextSize;
+    private String helperTextFamily;
+    private int helperFontResId;
+    private int helperTextStyle;
 
     private boolean isFocus = false;
     private boolean isActive = false;
@@ -76,6 +89,12 @@ public class CustomInputEdit extends ConstraintLayout {
         hintTextView = findViewById(R.id.hintText);
         containerLayout = findViewById(R.id.containerLayout);
         iconPass = findViewById(R.id.iconPass);
+        helperIconView = findViewById(R.id.helperIcon);
+        helperTextView = findViewById(R.id.helperText);
+        warningIconView = findViewById(R.id.warningIcon);
+        warningTextView = findViewById(R.id.warningText);
+        errorIconView = findViewById(R.id.errorIcon);
+        errorTextView = findViewById(R.id.errorText);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
