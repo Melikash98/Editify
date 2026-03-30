@@ -3,10 +3,10 @@
     <declare-styleable name="CustomInputField">
         <!-- Hint -->
         <attr name="hintText" format="string" />
+        <attr name="input" format="string"/>
 
         <!-- Icons -->
         <attr name="hintIcon" format="reference" />
-        <attr name="endIcon" format="reference" />
 
         <!-- background -->
         <attr name="activeBackground" format="reference" />
@@ -14,11 +14,17 @@
 
         <!-- Color -->
         <attr name="hintColor" format="color" />
+        <attr name="iconHintColor" format="color" />
         <attr name="textColor" format="color" />
+        <attr name="inputColor" format="color" />
 
         <!-- Fonts and Size -->
         <attr name="hintSize" format="dimension" />
         <attr name="hintFamily" format="string" />
+        <attr name="inputSize" format="dimension" />
+        <attr name="inputFamily" format="string" />
+
+        <!--right and left -->
 
     </declare-styleable>
 </resources>
