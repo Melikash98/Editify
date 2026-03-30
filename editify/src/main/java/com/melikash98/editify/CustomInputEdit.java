@@ -130,14 +130,22 @@ public class CustomInputEdit extends ConstraintLayout {
             activeBackground = context.getDrawable(R.drawable.input_active);
         if (inactiveBackground == null)
             inactiveBackground = context.getDrawable(R.drawable.input_inactive);
-        
+
         passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
         passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
 
         int inputType = array.getInt(R.styleable.CustomInputField_inputType,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        editInput.setInputType(inputType);
+
         array.recycle();
+
+        if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL)) {
+            TypedArray androidArray = context.obtainStyledAttributes(attrs,
+                    new int[]{android.R.attr.inputType});
+            inputType = androidArray.getInt(0, inputType);
+            androidArray.recycle();
+        }
+        editInput.setInputType(inputType);
 
         setupDirectionConstraints();
 
@@ -162,9 +170,9 @@ public class CustomInputEdit extends ConstraintLayout {
                 updateUIState();
             }
         });
-        
+
         setupPasswordToggle();
-        
+
         hintLayout.bringToFront();
         iconPass.bringToFront();
         post(this::updateUIState);
