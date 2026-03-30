@@ -102,7 +102,7 @@ public class CustomInputEdit extends ConstraintLayout {
             float targetY;
             if (shouldFloat) {
                 float centeredTop = (editInput.getHeight() - hintLayout.getHeight()) / 2f;
-                float overlap = dp(18);
+                float overlap = dp(22);
                 targetY = -(centeredTop + overlap);
             } else {
                 targetY = 0f;
