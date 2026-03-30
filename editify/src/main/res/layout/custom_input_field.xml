@@ -105,9 +105,9 @@
                 android:textColor="@color/green"
                 android:textFontWeight="800"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@id/helpIcon"
-                app:layout_constraintStart_toEndOf="@id/helpIcon"
-                app:layout_constraintTop_toTopOf="@id/helpIcon" />
+                app:layout_constraintBottom_toBottomOf="@id/helperIcon"
+                app:layout_constraintStart_toEndOf="@id/helperIcon"
+                app:layout_constraintTop_toTopOf="@id/helperIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
