@@ -66,17 +66,16 @@ public class CustomInputEdit extends ConstraintLayout {
         hintLayout = findViewById(R.id.hintLayout);
         hintIcon = findViewById(R.id.iconStart);
         hintTextView = findViewById(R.id.hintText);
+        containerLayout = findViewById(R.id.containerLayout);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
         if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
         }
-
+        isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
         hintDefaultColor = hintTextView.getCurrentTextColor();
-        if (hintActiveColor == 0) {
-            hintActiveColor = hintDefaultColor;
-        }
+        if (hintActiveColor == 0) hintActiveColor = hintDefaultColor;
 
         activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
@@ -85,7 +84,6 @@ public class CustomInputEdit extends ConstraintLayout {
         if (inactiveBackground == null)
             inactiveBackground = context.getDrawable(R.drawable.input_inactive);
 
-        isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
 
         array.recycle();
 
