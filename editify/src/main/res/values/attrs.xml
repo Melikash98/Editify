@@ -11,6 +11,7 @@
         <!-- background -->
         <attr name="activeBackground" format="reference" />
         <attr name="inactiveBackground" format="reference" />
+        <attr name="hintBackgroundColor" format="color" />
 
         <!-- Color -->
         <attr name="hintColor" format="color" />

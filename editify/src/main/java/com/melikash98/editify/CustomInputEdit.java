@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -103,6 +104,14 @@ public class CustomInputEdit extends ConstraintLayout {
                 hintDefaultColor
         );
 
+        int hintBgColor = array.getColor(R.styleable.CustomInputField_hintBackgroundColor, Color.WHITE);
+        Drawable hintBackground = context.getDrawable(R.drawable.hint_bg); // shape اصلی
+        if (hintBackground instanceof GradientDrawable) {
+            ((GradientDrawable) hintBackground.mutate()).setColor(hintBgColor);
+        } else {
+            hintBackground.setTint(hintBgColor);
+        }
+        hintLayout.setBackground(hintBackground);
         activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
         if (activeBackground == null)
