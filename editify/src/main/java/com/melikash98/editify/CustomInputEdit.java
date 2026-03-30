@@ -96,7 +96,7 @@ public class CustomInputEdit extends ConstraintLayout {
             float targetY;
             if (shouldFloat) {
                 float centeredTop = (editInput.getHeight() - hintLayout.getHeight()) / 2f;
-                float overlap = dp(16); // کمی بیشتر تا دقیق روی border بنشیند
+                float overlap = dp(18); // کمی بیشتر تا دقیق روی border بنشیند
                 targetY = -(centeredTop + overlap);
             } else {
                 targetY = 0f; // وسط
