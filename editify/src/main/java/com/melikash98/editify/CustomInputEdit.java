@@ -91,11 +91,14 @@ public class CustomInputEdit extends ConstraintLayout {
         boolean shouldFloat = isFocus || isActive;
 
         AnimatorSet animatorSet = new AnimatorSet();
+        float targetY = shouldFloat ? -24f : 18f;
 
         ObjectAnimator translateY = ObjectAnimator.ofFloat(
-                hintLayout, "translationY", shouldFloat ? -26f : 8f);
+                hintLayout, "translationY", targetY);
+
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(
                 hintLayout, "scaleX", shouldFloat ? 0.88f : 1f);
+
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(
                 hintLayout, "scaleY", shouldFloat ? 0.88f : 1f);
 
