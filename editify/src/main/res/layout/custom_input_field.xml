@@ -34,6 +34,7 @@
             android:id="@+id/hintLayout"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_marginStart="10dp"
             android:background="@drawable/hint_bg"
             app:layout_constraintTop_toTopOf="@id/editInput"
             app:layout_constraintBottom_toBottomOf="@id/editInput"
