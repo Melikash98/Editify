@@ -63,7 +63,17 @@
                 app:layout_constraintStart_toEndOf="@id/iconStart"
                 app:layout_constraintTop_toTopOf="@id/iconStart"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iconPass"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/hintLayout"
+            app:layout_constraintBottom_toBottomOf="@id/hintLayout"
+            android:src="@drawable/icons"
+            android:tint="@color/black"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

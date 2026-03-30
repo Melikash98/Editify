@@ -7,6 +7,9 @@
 
         <!-- Icons -->
         <attr name="hintIcon" format="reference" />
+        <attr name="passShow" format="reference"/>
+        <attr name="passHide" format="reference"/>
+
 
         <!-- background -->
         <attr name="activeBackground" format="reference" />

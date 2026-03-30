@@ -93,7 +93,13 @@ public class CustomInputEdit extends ConstraintLayout {
             Typeface inputTypeface = Typeface.create(inputFamily, Typeface.NORMAL);
             editInput.setTypeface(inputTypeface);
         }
-
+        String inputText = array.getString(R.styleable.CustomInputField_input);
+        if (!TextUtils.isEmpty(inputText)) {
+            editInput.setText(inputText);
+        }
+        int editTextColor = array.getColor(R.styleable.CustomInputField_inputColor,
+                array.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
+        editInput.setTextColor(editTextColor);
         isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
         hintDefaultColor = array.getColor(
                 R.styleable.CustomInputField_hintColor,
