@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CustomInputField">
-        <!-- متن و hint -->
+        <!-- Hint -->
         <attr name="hintText" format="string" />
 
-        <!-- آیکون‌ها -->
+        <!-- Icons -->
         <attr name="hintIcon" format="reference" />
         <attr name="endIcon" format="reference" />
 
@@ -12,13 +12,13 @@
         <attr name="activeBackground" format="reference" />
         <attr name="inactiveBackground" format="reference" />
 
-        <!-- رنگ‌ها -->
+        <!-- Color -->
         <attr name="hintColor" format="color" />
         <attr name="textColor" format="color" />
 
-        <!-- فونت و اندازه -->
-        <attr name="textSize" format="dimension" />
-        <attr name="fontFamily" format="string" />
+        <!-- Fonts and Size -->
+        <attr name="hintSize" format="dimension" />
+        <attr name="hintFamily" format="string" />
 
     </declare-styleable>
 </resources>
