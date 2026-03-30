@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.res.ResourcesCompat;
 
 public class CustomInputEdit extends ConstraintLayout {
     private AppCompatEditText editInput;
@@ -156,7 +157,33 @@ public class CustomInputEdit extends ConstraintLayout {
         passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
         int inputType = array.getInt(R.styleable.CustomInputField_inputType,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-
+        helperFontResId = array.getResourceId(R.styleable.CustomInputField_helperFamily, 0);
+        helperTextFamily = array.getString(R.styleable.CustomInputField_helperFamily);
+        String hText = array.getString(R.styleable.CustomInputField_helperText);
+        String wText = array.getString(R.styleable.CustomInputField_warningText);
+        String eText = array.getString(R.styleable.CustomInputField_errorText);
+        if (!TextUtils.isEmpty(hText)) helperTextView.setText(hText);
+        if (!TextUtils.isEmpty(wText)) warningTextView.setText(wText);
+        if (!TextUtils.isEmpty(eText)) errorTextView.setText(eText);
+        if (array.getDrawable(R.styleable.CustomInputField_helperIcon) != null) {
+            helperIconView.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_helperIcon));
+        }
+        if (array.getDrawable(R.styleable.CustomInputField_warningIcon) != null) {
+            warningIconView.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_warningIcon));
+        }
+        if (array.getDrawable(R.styleable.CustomInputField_errorIcon) != null) {
+            errorIconView.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_errorIcon));
+        }
+        if (helperTextSize > 0) {
+            helperTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, helperTextSize);
+            warningTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, helperTextSize);
+            errorTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, helperTextSize);
+        }
+        Typeface helperTypeface = getHelperTypeface(context);
+        helperTextView.setTypeface(helperTypeface);
+        warningTextView.setTypeface(helperTypeface);
+        errorTextView.setTypeface(helperTypeface);
+        applyHelperColors();
         array.recycle();
 
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL)) {
@@ -196,6 +223,31 @@ public class CustomInputEdit extends ConstraintLayout {
         hintLayout.bringToFront();
         iconPass.bringToFront();
         post(this::updateUIState);
+    }
+
+    private Typeface getHelperTypeface(Context context) {
+        if (helperFontResId != 0) {
+            Typeface tf = ResourcesCompat.getFont(context, helperFontResId);
+            if (tf != null) return tf;
+        }
+        if (!TextUtils.isEmpty(helperTextFamily)) {
+            return Typeface.create(helperTextFamily, helperTextStyle);
+        }
+        return Typeface.create(Typeface.DEFAULT, helperTextStyle);
+    }
+
+    private void applyHelperColors() {
+        helperTextView.setTextColor(helperColor);
+        if (helperIconView.getDrawable() != null)
+            helperIconView.setColorFilter(helperColor, PorterDuff.Mode.SRC_IN);
+
+        warningTextView.setTextColor(warningColor);
+        if (warningIconView.getDrawable() != null)
+            warningIconView.setColorFilter(warningColor, PorterDuff.Mode.SRC_IN);
+
+        errorTextView.setTextColor(errorColor);
+        if (errorIconView.getDrawable() != null)
+            errorIconView.setColorFilter(errorColor, PorterDuff.Mode.SRC_IN);
     }
 
     private void setupPasswordToggle() {
@@ -338,6 +390,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public void setText(String text) {
         editInput.setText(text);
     }
+
     public void setHelperText(String text) {
         if (helperTextView != null) {
             helperTextView.setText(text != null ? text : "");
