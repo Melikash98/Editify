@@ -85,50 +85,26 @@ public class CustomInputEdit extends ConstraintLayout {
                 updateHintPosition();
             }
         });
-        updateHintPosition();
+        hintLayout.bringToFront();
+        post(this::updateHintPosition);
     }
 
     private void updateHintPosition() {
         hintLayout.post(() -> {
-
             boolean shouldFloat = isFocus || isActive;
 
-            float centerY = 0f; // چون با constraint وسطه
-
-            // فاصله از مرکز تا خط بالا
-            float distanceToTop = (editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f);
-
-            // یه مقدار خیلی کم برای اینکه دقیق روی خط بشینه
-            float adjust = dp(20);
-
             float targetY = shouldFloat
-                    ? -(distanceToTop + adjust)   // بره روی خط
-                    : centerY;                   // برگرده وسط
+                    ? -((editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f)) - dp(3)
+                    : 0f;
 
-            AnimatorSet animatorSet = new AnimatorSet();
-
-            ObjectAnimator translateY = ObjectAnimator.ofFloat(
-                    hintLayout,
-                    "translationY",
-                    targetY
-            );
-
-            ObjectAnimator scaleX = ObjectAnimator.ofFloat(
-                    hintLayout,
-                    "scaleX",
-                    shouldFloat ? 0.88f : 1f
-            );
-
-            ObjectAnimator scaleY = ObjectAnimator.ofFloat(
-                    hintLayout,
-                    "scaleY",
-                    shouldFloat ? 0.88f : 1f
-            );
-
-            animatorSet.playTogether(translateY, scaleX, scaleY);
-            animatorSet.setDuration(220);
-            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-            animatorSet.start();
+            hintLayout.animate().cancel();
+            hintLayout.animate()
+                    .translationY(targetY)
+                    .scaleX(shouldFloat ? 0.92f : 1f)
+                    .scaleY(1f)   // مهم: عمودی را فشرده نکن
+                    .setDuration(220)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .start();
         });
     }
     private float dp(float value) {
