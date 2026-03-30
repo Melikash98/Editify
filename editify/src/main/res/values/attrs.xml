@@ -10,16 +10,6 @@
         <attr name="endIcon" format="reference" />
         <attr name="showPasswordToggle" default="false" format="boolean" />
         <attr name="passwordToggleIcon" format="reference" />
-
-        <!-- انواع ورودی -->
-        <attr name="inputType" format="enum">
-            <enum name="text" value="1" />
-            <enum name="email" value="2" />
-            <enum name="password" value="3" />
-            <enum name="number" value="4" />
-            <enum name="phone" value="5" />
-        </attr>
-
         <!-- background -->
         <attr name="activeBackground" format="reference" />
         <attr name="inactiveBackground" format="reference" />
@@ -35,11 +25,5 @@
         <attr name="textSize" format="dimension" />
         <attr name="fontFamily" format="string" />
 
-        <!-- alignment (چپ/راست/مرکز) -->
-        <attr name="textAlignment" format="enum">
-            <enum name="left" value="0" />
-            <enum name="center" value="1" />
-            <enum name="right" value="2" />
-        </attr>
     </declare-styleable>
 </resources>
