@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
@@ -88,21 +89,54 @@ public class CustomInputEdit extends ConstraintLayout {
     }
 
     private void updateHintPosition() {
-        boolean shouldFloat = isFocus || isActive;
+        hintLayout.post(() -> {
 
-        AnimatorSet animatorSet = new AnimatorSet();
+            boolean shouldFloat = isFocus || isActive;
 
-        ObjectAnimator translateY = ObjectAnimator.ofFloat(
-                hintLayout, "translationY", shouldFloat ? -66f : 8f);
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(
-                hintLayout, "scaleX", shouldFloat ? 0.88f : 1f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(
-                hintLayout, "scaleY", shouldFloat ? 0.98f : 1f);
+            float centerY = 0f; // چون با constraint وسطه
 
-        animatorSet.playTogether(translateY, scaleX, scaleY);
-        animatorSet.setDuration(220);
-        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
-        animatorSet.start();
+            // فاصله از مرکز تا خط بالا
+            float distanceToTop = (editInput.getHeight() / 2f) - (hintLayout.getHeight() / 2f);
+
+            // یه مقدار خیلی کم برای اینکه دقیق روی خط بشینه
+            float adjust = dp(2);
+
+            float targetY = shouldFloat
+                    ? -(distanceToTop + adjust)   // بره روی خط
+                    : centerY;                   // برگرده وسط
+
+            AnimatorSet animatorSet = new AnimatorSet();
+
+            ObjectAnimator translateY = ObjectAnimator.ofFloat(
+                    hintLayout,
+                    "translationY",
+                    targetY
+            );
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(
+                    hintLayout,
+                    "scaleX",
+                    shouldFloat ? 0.88f : 1f
+            );
+
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(
+                    hintLayout,
+                    "scaleY",
+                    shouldFloat ? 0.88f : 1f
+            );
+
+            animatorSet.playTogether(translateY, scaleX, scaleY);
+            animatorSet.setDuration(220);
+            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+            animatorSet.start();
+        });
+    }
+    private float dp(float value) {
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                value,
+                getResources().getDisplayMetrics()
+        );
     }
     public String getText() {
         return editInput.getText().toString().trim();
