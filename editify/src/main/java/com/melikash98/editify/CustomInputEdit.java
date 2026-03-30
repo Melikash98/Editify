@@ -46,6 +46,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
     private int hintDefaultColor;
     private int hintActiveColor;
+    private int passIconColor;
 
     private boolean isFocus = false;
     private boolean isActive = false;
@@ -133,7 +134,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
         passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
         passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
-
+        passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
         int inputType = array.getInt(R.styleable.CustomInputField_inputType,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
 
@@ -189,6 +190,7 @@ public class CustomInputEdit extends ConstraintLayout {
         if (isPassword) {
             iconPass.setVisibility(View.VISIBLE);
             iconPass.setImageDrawable(passHideDrawable);
+            iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
             iconPass.setOnClickListener(v -> togglePasswordVisibility());
         } else {
             iconPass.setVisibility(View.GONE);
@@ -205,6 +207,7 @@ public class CustomInputEdit extends ConstraintLayout {
             editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             iconPass.setImageDrawable(passHideDrawable);
         }
+        iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
         editInput.setSelection(editInput.getText().length());
     }
 

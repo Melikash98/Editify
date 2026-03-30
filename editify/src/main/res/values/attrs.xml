@@ -22,6 +22,7 @@
         <attr name="iconHintColor" format="color" />
         <attr name="textColor" format="color" />
         <attr name="inputColor" format="color" />
+        <attr name="passIconColor" format="color" />
 
         <!-- Fonts and Size -->
         <attr name="hintSize" format="dimension" />
