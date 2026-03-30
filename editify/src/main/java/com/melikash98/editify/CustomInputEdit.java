@@ -35,10 +35,13 @@ public class CustomInputEdit extends ConstraintLayout {
     private ConstraintLayout containerLayout;
     private ImageView hintIcon;
     private TextView hintTextView;
-
+    private ImageView iconPass;
 
     private Drawable activeBackground;
     private Drawable inactiveBackground;
+
+    private Drawable passShowDrawable;
+    private Drawable passHideDrawable;
 
     private int hintDefaultColor;
     private int hintActiveColor;
@@ -46,6 +49,7 @@ public class CustomInputEdit extends ConstraintLayout {
     private boolean isFocus = false;
     private boolean isActive = false;
     private boolean isRightDirection = false;
+    private boolean isPasswordVisible = false;
 
 
     public CustomInputEdit(@NonNull Context context) {
