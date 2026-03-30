@@ -1,6 +1,8 @@
 package com.melikash98.editify;
 
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +13,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,19 +27,16 @@ public class CustomInputEdit extends ConstraintLayout {
     private AppCompatEditText editInput;
     private ConstraintLayout hintLayout;
     private ImageView iconStart;
-    private TextView hintText;
+    private TextView hintTextView;
     private ImageView iconEnd;
 
-
-    private boolean isActive = false;
-    private boolean isPasswordVisible = false;
-
-    private String hintStr;
     private Drawable activeBackground;
     private Drawable inactiveBackground;
+
     private int inactiveHintColor;
     private int activeHintColor;
-    private boolean showPasswordToggle;
+
+    private boolean isActive = false;
 
     public CustomInputEdit(@NonNull Context context) {
         this(context, null);
@@ -51,156 +51,170 @@ public class CustomInputEdit extends ConstraintLayout {
         init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        LayoutInflater.from(context).inflate(R.layout.custom_input_field, this, true);
+    private void init(@NonNull Context context, @Nullable AttributeSet attrs) {
+        inflate(context, R.layout.custom_input_field, this);
+
         backInput = findViewById(R.id.backInput);
         editInput = findViewById(R.id.editInput);
         hintLayout = findViewById(R.id.hintLayout);
         iconStart = findViewById(R.id.iconStart);
-        hintText = findViewById(R.id.hintText);
+        hintTextView = findViewById(R.id.hintText);
         iconEnd = findViewById(R.id.iconEnd);
 
-        backInput.setClipChildren(false);
-        setClipChildren(false);
+        // مقادیر پیش‌فرض از attrs.xml
+        inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+        activeBackground = context.getDrawable(R.drawable.input_active);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
+        inactiveHintColor = Color.parseColor("#BDBDBD"); // رنگ hint غیرفعال
+        activeHintColor = Color.parseColor("#000000");   // رنگ hint وقتی بالا میره
 
-        hintStr = a.getString(R.styleable.CustomInputField_hintText);
-        if (hintStr != null) hintText.setText(hintStr);
+        if (attrs != null) {
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
 
-        activeBackground = a.getDrawable(R.styleable.CustomInputField_activeBackground);
-        inactiveBackground = a.getDrawable(R.styleable.CustomInputField_inactiveBackground);
+            // hint متن
+            String hintStr = a.getString(R.styleable.CustomInputField_hintText);
+            if (!TextUtils.isEmpty(hintStr)) {
+                hintTextView.setText(hintStr);
+            }
 
-        if (inactiveBackground != null) {
-            backInput.setBackground(inactiveBackground);
-        } else {
-            backInput.setBackgroundResource(R.drawable.input_inactive);
+            // آیکون hint
+            int hintIconRes = a.getResourceId(R.styleable.CustomInputField_hintIcon, 0);
+            if (hintIconRes != 0) {
+                iconStart.setImageResource(hintIconRes);
+            }
+
+            // آیکون انتها (فعلاً فقط visibility)
+            int endIconRes = a.getResourceId(R.styleable.CustomInputField_endIcon, 0);
+            if (endIconRes != 0) {
+                iconEnd.setImageResource(endIconRes);
+            }
+
+            // رنگ hint (غیرفعال)
+            if (a.hasValue(R.styleable.CustomInputField_hintColor)) {
+                inactiveHintColor = a.getColor(R.styleable.CustomInputField_hintColor, inactiveHintColor);
+            }
+
+            // رنگ متن (برای hint فعال و متن داخل EditText)
+            if (a.hasValue(R.styleable.CustomInputField_textColor)) {
+                activeHintColor = a.getColor(R.styleable.CustomInputField_textColor, activeHintColor);
+                editInput.setTextColor(activeHintColor);
+            }
+
+            // بک‌گراندهای فعال و غیرفعال
+            int activeBgRes = a.getResourceId(R.styleable.CustomInputField_activeBackground, 0);
+            if (activeBgRes != 0) {
+                activeBackground = context.getDrawable(activeBgRes);
+            }
+            int inactiveBgRes = a.getResourceId(R.styleable.CustomInputField_inactiveBackground, 0);
+            if (inactiveBgRes != 0) {
+                inactiveBackground = context.getDrawable(inactiveBgRes);
+            }
+
+            a.recycle();
         }
 
-        inactiveHintColor = a.getColor(R.styleable.CustomInputField_hintColor, Color.parseColor("#BDBDBD"));
-        activeHintColor = a.getColor(R.styleable.CustomInputField_textColor, Color.BLACK);
-
-        hintText.setTextColor(inactiveHintColor);
-        editInput.setTextColor(a.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
-
-        Drawable startIcon = a.getDrawable(R.styleable.CustomInputField_hintIcon);
-        if (startIcon != null) {
-            iconStart.setImageDrawable(startIcon);
-        }
-        Drawable endIcon = a.getDrawable(R.styleable.CustomInputField_endIcon);
-        if (endIcon != null) {
-            iconEnd.setImageDrawable(endIcon);
-            iconEnd.setVisibility(VISIBLE);
-        }
-
-        a.recycle();
+        // حالت اولیه (غیرفعال)
+        backInput.setBackground(inactiveBackground);
+        hintTextView.setTextColor(inactiveHintColor);
+        iconStart.setColorFilter(inactiveHintColor);
+        editInput.setBackgroundColor(Color.TRANSPARENT);
 
         setupListeners();
-        updateState(false);
     }
+
     private void setupListeners() {
+        // listener فوکوس
         editInput.setOnFocusChangeListener((v, hasFocus) -> {
             boolean shouldBeActive = hasFocus || !TextUtils.isEmpty(editInput.getText());
-            updateState(shouldBeActive);
+            updateInputState(shouldBeActive);
         });
+
+        // listener تغییر متن (اگر متن وارد شد حتی بدون فوکوس فعال بماند)
         editInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean shouldBeActive = editInput.hasFocus() || !TextUtils.isEmpty(s);
-                updateState(shouldBeActive);
+                boolean shouldBeActive = editInput.hasFocus() || s.length() > 0;
+                updateInputState(shouldBeActive);
             }
         });
-       
     }
-    private void updateState(boolean active) {
-        if (isActive == active) return;
-        isActive = active;
 
-        if (active) {
+    private void updateInputState(boolean shouldBeActive) {
+        if (isActive == shouldBeActive) return;
+        isActive = shouldBeActive;
+
+        if (shouldBeActive) {
             activateInput();
         } else {
             deactivateInput();
         }
     }
 
-    private void deactivateInput() {
-        if (inactiveBackground != null) {
-            backInput.setBackground(inactiveBackground);
-        } else {
-            backInput.setBackgroundResource(R.drawable.input_inactive);
-        }
-
-        animateHintToInactive();
-    }
-
-    private void animateHintToInactive() {
-        hintLayout.animate()
-                .translationY(0)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(220)
-                .setInterpolator(new android.view.animation.AccelerateInterpolator())
-                .start();
-
-        animateColor(hintText, activeHintColor, inactiveHintColor, 220);
-    }
-
     private void activateInput() {
-        if (activeBackground != null) {
-            backInput.setBackground(activeBackground);
-        } else {
-            backInput.setBackgroundResource(R.drawable.input_active);
-        }
-        animateHintToActive();
+        // تغییر بک‌گراند به حالت فعال (dashed)
+        backInput.setBackground(activeBackground);
+
+        // انیمیشن: hint به بالا + تغییر رنگ
+        float translationUp = -dpToPx(26); // دقیقاً مطابق ویدیو (hint بره بالا)
+
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(hintLayout, "translationY", 0f, translationUp);
+        ObjectAnimator colorHint = ObjectAnimator.ofArgb(hintTextView, "textColor", inactiveHintColor, activeHintColor);
+        ObjectAnimator colorIcon = ObjectAnimator.ofArgb(iconStart, "colorFilter", inactiveHintColor, activeHintColor);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(translateY, colorHint, colorIcon);
+        set.setDuration(220);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.start();
+
+        // افزایش padding بالای EditText تا متن با hint تداخل نداشته باشه
+        int newTopPadding = dpToPx(28);
+        editInput.setPadding(editInput.getPaddingLeft(), newTopPadding, editInput.getPaddingRight(), editInput.getPaddingBottom());
     }
 
-    private void animateHintToActive() {
-        float density = getResources().getDisplayMetrics().density;
-        float targetTranslationY = -36f * density;
-        hintLayout.animate()
-                .translationY(targetTranslationY)
-                .scaleX(0.82f)
-                .scaleY(0.82f)
-                .setDuration(260)
-                .setInterpolator(new android.view.animation.DecelerateInterpolator())
-                .start();
+    private void deactivateInput() {
+        // تغییر بک‌گراند به حالت غیرفعال
+        backInput.setBackground(inactiveBackground);
 
-        animateColor(hintText, inactiveHintColor, activeHintColor, 260);
+        // انیمیشن: hint به پایین + تغییر رنگ به حالت اولیه
+        float translationDown = 0f;
+
+        ObjectAnimator translateY = ObjectAnimator.ofFloat(hintLayout, "translationY", hintLayout.getTranslationY(), translationDown);
+        ObjectAnimator colorHint = ObjectAnimator.ofArgb(hintTextView, "textColor", activeHintColor, inactiveHintColor);
+        ObjectAnimator colorIcon = ObjectAnimator.ofArgb(iconStart, "colorFilter", activeHintColor, inactiveHintColor);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(translateY, colorHint, colorIcon);
+        set.setDuration(200);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.start();
+
+        // بازگرداندن padding EditText
+        editInput.setPadding(editInput.getPaddingLeft(), dpToPx(10), editInput.getPaddingRight(), editInput.getPaddingBottom());
     }
 
-    private void animateColor(TextView view, int fromColor, int toColor, int duration) {
-        ValueAnimator colorAnim = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
-        colorAnim.setDuration(duration);
-        colorAnim.addUpdateListener(animation -> view.setTextColor((int) animation.getAnimatedValue()));
-        colorAnim.start();
-    }
-    public String getText() {
-        return editInput.getText() != null ? editInput.getText().toString() : "";
+    private int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 
-    public void setText(String text) {
-        editInput.setText(text);
-        updateState(!TextUtils.isEmpty(text));
-    }
-
-    public void setHint(String hint) {
-        hintStr = hint;
-        hintText.setText(hint);
-    }
-
+    // متدهای عمومی ساده (فقط برای دسترسی به EditText)
     public AppCompatEditText getEditText() {
         return editInput;
     }
 
-    public void setError(String error) {
+    public String getText() {
+        return editInput.getText() != null ? editInput.getText().toString().trim() : "";
     }
 
-    public void setHelperText(String helper) {
+    public void setText(String text) {
+        editInput.setText(text);
     }
 }
