@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -73,6 +74,7 @@ public class CustomInputEdit extends ConstraintLayout {
         hintIcon = findViewById(R.id.iconStart);
         hintTextView = findViewById(R.id.hintText);
         containerLayout = findViewById(R.id.containerLayout);
+        iconPass = findViewById(R.id.iconPass);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
@@ -128,7 +130,9 @@ public class CustomInputEdit extends ConstraintLayout {
             activeBackground = context.getDrawable(R.drawable.input_active);
         if (inactiveBackground == null)
             inactiveBackground = context.getDrawable(R.drawable.input_inactive);
-
+        
+        passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
+        passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
 
         array.recycle();
 
@@ -155,8 +159,42 @@ public class CustomInputEdit extends ConstraintLayout {
                 updateUIState();
             }
         });
+        
+        setupPasswordToggle();
+        
         hintLayout.bringToFront();
         post(this::updateUIState);
+    }
+
+    private void setupPasswordToggle() {
+        if (passShowDrawable == null || passHideDrawable == null) return;
+
+        int inputType = editInput.getInputType();
+        boolean isPasswordInput = (inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD) != 0 ||
+                (inputType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) != 0 ||
+                (inputType & InputType.TYPE_NUMBER_VARIATION_PASSWORD) != 0;
+
+        if (isPasswordInput) {
+            iconPass.setVisibility(View.VISIBLE);
+            iconPass.setImageDrawable(passHideDrawable);
+            iconPass.setOnClickListener(v -> togglePasswordVisibility());
+        } else {
+            iconPass.setVisibility(View.GONE);
+        }
+    }
+
+    private void togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible;
+
+        if (isPasswordVisible) {
+            editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            iconPass.setImageDrawable(passShowDrawable);
+        } else {
+            editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            iconPass.setImageDrawable(passHideDrawable);
+        }
+
+        editInput.setSelection(editInput.getText().length());
     }
 
     private void setupDirectionConstraints() {
