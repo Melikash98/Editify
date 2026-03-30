@@ -73,6 +73,10 @@ public class CustomInputEdit extends ConstraintLayout {
         if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
         }
+        float hintSize = array.getDimension(R.styleable.CustomInputField_hintSize, 0);
+        if (hintSize > 0) {
+            hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
+        }
         isRightDirection = array.getBoolean(R.styleable.CustomInputField_rightDirection, false);
         hintDefaultColor = hintTextView.getCurrentTextColor();
         if (hintActiveColor == 0) hintActiveColor = hintDefaultColor;
@@ -131,6 +135,7 @@ public class CustomInputEdit extends ConstraintLayout {
         containerSet.connect(R.id.hintLayout, ConstraintSet.BOTTOM, R.id.editInput, ConstraintSet.BOTTOM, 0);
         containerSet.applyTo(containerLayout);
 
+        // Internal order of icon + text
         ConstraintSet hintSet = new ConstraintSet();
         hintSet.clone(hintLayout);
 
@@ -142,24 +147,28 @@ public class CustomInputEdit extends ConstraintLayout {
         if (isRightDirection) {
             hintSet.connect(R.id.iconStart, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
             hintSet.connect(R.id.hintText, ConstraintSet.END, R.id.iconStart, ConstraintSet.START, (int) dp(10));
-            hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
-            hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-            hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
         } else {
             hintSet.connect(R.id.iconStart, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
             hintSet.connect(R.id.hintText, ConstraintSet.START, R.id.iconStart, ConstraintSet.END, (int) dp(10));
-            hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
-            hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
-            hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
         }
+        hintSet.connect(R.id.hintText, ConstraintSet.TOP, R.id.iconStart, ConstraintSet.TOP, 0);
+        hintSet.connect(R.id.iconStart, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0);
+        hintSet.connect(R.id.iconStart, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
         hintSet.applyTo(hintLayout);
 
+        // EditText gravity
         if (isRightDirection) {
             editInput.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
             editInput.setTextDirection(View.TEXT_DIRECTION_RTL);
         } else {
             editInput.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
             editInput.setTextDirection(View.TEXT_DIRECTION_LTR);
+        }
+
+        if (isRightDirection) {
+            hintLayout.setPadding((int) dp(30), 0, 0, 0);
+        } else {
+            hintLayout.setPadding(0, 0, (int) dp(30), 0);
         }
     }
 
