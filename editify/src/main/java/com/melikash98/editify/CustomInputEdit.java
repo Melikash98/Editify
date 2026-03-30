@@ -38,6 +38,9 @@ public class CustomInputEdit extends ConstraintLayout {
     private Drawable activeBackground;
     private Drawable inactiveBackground;
 
+    private int hintDefaultColor;
+    private int hintActiveColor;
+
     private boolean isFocus = false;
     private boolean isActive = false;
     private boolean isRightDirection = false;
@@ -70,6 +73,11 @@ public class CustomInputEdit extends ConstraintLayout {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
         }
 
+        hintDefaultColor = hintTextView.getCurrentTextColor();
+        if (hintActiveColor == 0) {
+            hintActiveColor = hintDefaultColor;
+        }
+
         activeBackground = array.getDrawable(R.styleable.CustomInputField_activeBackground);
         inactiveBackground = array.getDrawable(R.styleable.CustomInputField_inactiveBackground);
         if (activeBackground == null)
@@ -87,7 +95,7 @@ public class CustomInputEdit extends ConstraintLayout {
         editInput.setOnFocusChangeListener((v, hasFocus) -> {
             isFocus = hasFocus;
             if (hasFocus) editInput.setBackground(activeBackground);
-            updateHintPosition();
+            updateUIState();
         });
         editInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,7 +109,7 @@ public class CustomInputEdit extends ConstraintLayout {
             @Override
             public void afterTextChanged(Editable s) {
                 isActive = s.length() > 0;
-                updateHintPosition();
+                updateUIState();
             }
         });
         hintLayout.bringToFront();
@@ -161,7 +169,17 @@ public class CustomInputEdit extends ConstraintLayout {
     private void updateUIState() {
         boolean shouldActivate = isFocus || isActive;
         editInput.setBackground(shouldActivate ? activeBackground : inactiveBackground);
+        updateHintAppearance(shouldActivate);
         updateHintPosition();
+    }
+
+    private void updateHintAppearance(boolean shouldActivate) {
+        int targetColor = shouldActivate ? hintActiveColor : hintDefaultColor;
+
+        hintTextView.setTextColor(targetColor);
+        if (hintIcon.getDrawable() != null) {
+            hintIcon.setColorFilter(targetColor, PorterDuff.Mode.SRC_IN);
+        }
     }
 
     private void updateHintPosition() {
@@ -180,7 +198,8 @@ public class CustomInputEdit extends ConstraintLayout {
             hintLayout.animate().cancel();
             hintLayout.animate()
                     .translationY(targetY)
-                    .scaleX(shouldFloat ? 0.92f : 1f)
+                    .scaleX(shouldFloat ? 0.85f : 1f)
+                    .scaleY(shouldFloat ? 0.85f : 1f)
                     .scaleY(1f)
                     .setDuration(220)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
