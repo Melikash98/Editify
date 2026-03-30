@@ -23,12 +23,20 @@
         <attr name="textColor" format="color" />
         <attr name="inputColor" format="color" />
         <attr name="passIconColor" format="color" />
+        <attr name="helperColor" format="color" />
+        <attr name="warningColor" format="color" />
+        <attr name="errorColor" format="color" />
+
+
+
 
         <!-- Fonts and Size -->
         <attr name="hintSize" format="dimension" />
         <attr name="hintFamily" format="string" />
         <attr name="inputSize" format="dimension" />
         <attr name="inputFamily" format="string" />
+        <attr name="helperSize" format="color" />
+        <attr name="helperFamily" format="color" />
 
         <!-- Style -->
         <attr name="inputType" format="integer" />
