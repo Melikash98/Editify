@@ -57,6 +57,9 @@ public class CustomInputEdit extends ConstraintLayout {
     private int helperColor;
     private int warningColor;
     private int errorColor;
+    private ConstraintLayout helperBack;
+    private ConstraintLayout wrongBack;
+    private ConstraintLayout errorBack;
     private float helperTextSize;
     private String helperTextFamily;
     private int helperFontResId;
@@ -96,6 +99,9 @@ public class CustomInputEdit extends ConstraintLayout {
         warningTextView = findViewById(R.id.warningText);
         errorIconView = findViewById(R.id.errorIcon);
         errorTextView = findViewById(R.id.errorText);
+        helperBack = findViewById(R.id.helperBack);
+        wrongBack  = findViewById(R.id.wrongBack);
+        errorBack  = findViewById(R.id.errorBack);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
@@ -157,14 +163,27 @@ public class CustomInputEdit extends ConstraintLayout {
         passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
         int inputType = array.getInt(R.styleable.CustomInputField_inputType,
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
-        helperFontResId = array.getResourceId(R.styleable.CustomInputField_helperFamily, 0);
-        helperTextFamily = array.getString(R.styleable.CustomInputField_helperFamily);
+        helperColor = array.getColor(R.styleable.CustomInputField_helperColor, getResources().getColor(R.color.green));
+        warningColor = array.getColor(R.styleable.CustomInputField_warningColor, getResources().getColor(R.color.yellow));
+        errorColor = array.getColor(R.styleable.CustomInputField_errorColor, getResources().getColor(R.color.red));
+        float helperSize = array.getDimension(R.styleable.CustomInputField_helperSize, 0);
+        helperTextSize = helperSize;
         String hText = array.getString(R.styleable.CustomInputField_helperText);
         String wText = array.getString(R.styleable.CustomInputField_warningText);
         String eText = array.getString(R.styleable.CustomInputField_errorText);
-        if (!TextUtils.isEmpty(hText)) helperTextView.setText(hText);
-        if (!TextUtils.isEmpty(wText)) warningTextView.setText(wText);
-        if (!TextUtils.isEmpty(eText)) errorTextView.setText(eText);
+
+        if (!TextUtils.isEmpty(hText)) {
+            helperTextView.setText(hText);
+            helperBack.setVisibility(View.VISIBLE);   // ← مهم!
+        }
+        if (!TextUtils.isEmpty(wText)) {
+            warningTextView.setText(wText);
+            wrongBack.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(eText)) {
+            errorTextView.setText(eText);
+            errorBack.setVisibility(View.VISIBLE);
+        }
         if (array.getDrawable(R.styleable.CustomInputField_helperIcon) != null) {
             helperIconView.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_helperIcon));
         }
@@ -179,11 +198,15 @@ public class CustomInputEdit extends ConstraintLayout {
             warningTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, helperTextSize);
             errorTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, helperTextSize);
         }
+
         Typeface helperTypeface = getHelperTypeface(context);
         helperTextView.setTypeface(helperTypeface);
         warningTextView.setTypeface(helperTypeface);
         errorTextView.setTypeface(helperTypeface);
+
         applyHelperColors();
+
+
         array.recycle();
 
         if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL)) {
@@ -394,21 +417,21 @@ public class CustomInputEdit extends ConstraintLayout {
     public void setHelperText(String text) {
         if (helperTextView != null) {
             helperTextView.setText(text != null ? text : "");
-            helperTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+            helperBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);  // ← اینجا والد
         }
     }
 
     public void setWarningText(String text) {
         if (warningTextView != null) {
             warningTextView.setText(text != null ? text : "");
-            warningTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+            wrongBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
 
     public void setErrorText(String text) {
         if (errorTextView != null) {
             errorTextView.setText(text != null ? text : "");
-            errorTextView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+            errorBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
 }
