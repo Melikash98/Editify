@@ -86,7 +86,13 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         });
         hintLayout.bringToFront();
-        post(this::updateHintPosition);
+        post(this::updateUIState);
+    }
+
+    private void updateUIState() {
+        boolean shouldActivate = isFocus || isActive;
+        editInput.setBackground(shouldActivate ? activeBackground : inactiveBackground);
+        updateHintPosition();
     }
 
     private void updateHintPosition() {
@@ -96,17 +102,17 @@ public class CustomInputEdit extends ConstraintLayout {
             float targetY;
             if (shouldFloat) {
                 float centeredTop = (editInput.getHeight() - hintLayout.getHeight()) / 2f;
-                float overlap = dp(18); // کمی بیشتر تا دقیق روی border بنشیند
+                float overlap = dp(18);
                 targetY = -(centeredTop + overlap);
             } else {
-                targetY = 0f; // وسط
+                targetY = 0f;
             }
 
             hintLayout.animate().cancel();
             hintLayout.animate()
                     .translationY(targetY)
                     .scaleX(shouldFloat ? 0.92f : 1f)
-                    .scaleY(1f)   // مهم: عمودی را فشرده نکن
+                    .scaleY(1f)
                     .setDuration(220)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .start();
@@ -119,6 +125,7 @@ public class CustomInputEdit extends ConstraintLayout {
                 getResources().getDisplayMetrics()
         );
     }
+
     public String getText() {
         return editInput.getText().toString().trim();
     }
