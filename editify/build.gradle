@@ -49,7 +49,7 @@ afterEvaluate {
 
                 groupId = 'com.github.melikash98'
                 artifactId = 'editify'
-                version = '1.0.5'
+                version = '1.0.6'
             }
         }
     }
