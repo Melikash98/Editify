@@ -191,7 +191,9 @@ This project is licensed under the MIT License.
 
 ---
 ## Keywords
+
 android custom edittext, floating hint edittext, material input field android, password toggle edittext, android ui library, custom input view
+
 ---
 ## 👩‍💻 Author
 
