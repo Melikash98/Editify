@@ -188,17 +188,6 @@ app:rightDirection="true"
 
 ---
 
-## 📸 Preview
-
-Add screenshots:
-
-```
-docs/images/preview1.png
-docs/images/preview2.png
-```
-
----
-
 ## 🎬 Demo (GIF / Video)
 
 ### GIF
