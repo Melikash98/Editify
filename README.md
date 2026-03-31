@@ -26,7 +26,7 @@ Editify provides a modern `CustomInputEdit` component that replaces the default 
 
 ## 📺 Demo
 
-<img src="https://raw.githubusercontent.com/Melikash98/Editify/main/editfy.gif" alt="editfy.gif" width="60%"   height="60%" style="margin-right: 10px;padding-top: 6rem;" />
+<img src="https://raw.githubusercontent.com/Melikash98/Editify/main/editfy.gif" alt="editfy.gif" width="40%"   height="40%" style="margin-right: 10px;padding-top: 6rem;" />
 
 ---
 
