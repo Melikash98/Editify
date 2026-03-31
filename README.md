@@ -1,5 +1,7 @@
 # Editify
+[![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 
+**A beautiful and lightweight Material-style EditText library with smooth floating hint animation.**
 [![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
