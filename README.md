@@ -26,7 +26,6 @@ Editify provides a modern `CustomInputEdit` component that replaces the default 
 
 ## 📺 Demo
 
-Upload your demo video/GIF to the repository root (recommended name: `demo.gif` or `demo.mp4`).
 <img src="https://raw.githubusercontent.com/Melikash98/Haus-Suche/main/editfy.gif" alt="editfy.gif" width="100%"   height="100%" style="margin-right: 10px;padding-top: 6rem;" />
 
 ---
