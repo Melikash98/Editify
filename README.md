@@ -195,7 +195,9 @@ This project is licensed under the Apache License, Version 2.0.
 <p>You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0</p>
 
 ---
-
+## Keywords
+android custom edittext, floating hint edittext, material input field android, password toggle edittext, android ui library, custom input view
+---
 ## 👩‍💻 Author
 
 Melikash98
