@@ -27,10 +27,7 @@ Editify provides a modern `CustomInputEdit` component that replaces the default 
 ## 📺 Demo
 
 Upload your demo video/GIF to the repository root (recommended name: `demo.gif` or `demo.mp4`).
-
-![Editify Usage Demo](demo.gif)
-
-> *Tip: Record a short 10–15 second GIF showing the floating hint animation, password toggle, error/warning/helper states in both LTR and RTL directions.*
+<img src="https://raw.githubusercontent.com/Melikash98/Haus-Suche/main/editfy.gif" alt="editfy.gif" width="100%"   height="100%" style="margin-right: 10px;padding-top: 6rem;" />
 
 ---
 
