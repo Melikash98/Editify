@@ -66,31 +66,47 @@ dependencies {
     android:layout_height="wrap_content"
 
     <!-- Hint configuration -->
-    app:hintText="Username"                <!-- Main hint text -->
-    app:hintIcon="@drawable/ic_user"       <!-- Icon inside hint -->
-    app:hintColor="@color/gray"            <!-- Default hint color -->
-    app:hintActiveColor="@color/green"     <!-- Color when focused -->
-    app:hintBackgroundColor="@color/white" <!-- Background of hint -->
+    app:hintText="Username"                    <!-- Main hint text -->
+    app:hintIcon="@drawable/ic_user"          <!-- Icon inside hint -->
+    app:hintColor="@color/gray"               <!-- Default hint color -->
+    app:hintActiveColor="@color/green"        <!-- Color when focused/active -->
+    app:hintBackgroundColor="@color/white"    <!-- Background of the floating hint -->
 
     <!-- Input text styling -->
-    app:inputColor="@color/black"          <!-- Text color inside input -->
-    app:textColor="@color/black"           <!-- Fallback text color -->
+    app:inputColor="@color/black"             <!-- Text color inside the input field -->
+    app:textColor="@color/black"              <!-- Fallback text color -->
+
+    <!-- Font & Size Configuration -->
+    app:hintFamily="@font/vazirmatn_medium"   <!-- Hint font (supports @font/ or font family name) -->
+    app:hintSize="16sp"                       <!-- Hint text size -->
+
+    app:inputFamily="@font/vazirmatn"         <!-- Input field font -->
+    app:inputSize="17sp"                      <!-- Input text size -->
+
+    app:helperFamily="@font/vazirmatn_light"  <!-- Helper/Warning/Error font -->
+    app:helperSize="13.5sp"                   <!-- Helper/Warning/Error text size -->
 
     <!-- Background states -->
-    app:activeBackground="@drawable/input_active"     <!-- When focused -->
-    app:inactiveBackground="@drawable/input_inactive" <!-- Default -->
+    app:activeBackground="@drawable/input_active"     <!-- Background when focused -->
+    app:inactiveBackground="@drawable/input_inactive" <!-- Default background -->
 
     <!-- Helper / Warning / Error messages -->
-    app:helperText="Enter username"        <!-- Helper message -->
-    app:warningText="Check your input"     <!-- Warning message -->
-    app:errorText="Field required"         <!-- Error message -->
+    app:helperText="Enter your username"      <!-- Helper message -->
+    app:warningText="Please check your input" <!-- Warning message -->
+    app:errorText="This field is required"    <!-- Error message -->
 
     <!-- Password toggle icons -->
-    app:passShow="@drawable/ic_show"       <!-- Icon when password visible -->
-    app:passHide="@drawable/ic_hide"       <!-- Icon when password hidden -->
+    app:passShow="@drawable/ic_show"          <!-- Icon when password is visible -->
+    app:passHide="@drawable/ic_hide"          <!-- Icon when password is hidden -->
 
-    <!-- Layout direction (RTL / LTR) -->
-    app:rightDirection="false"/>
+    <!-- Layout direction -->
+    app:rightDirection="false"                <!-- Set true for RTL languages -->
+
+    <!-- Input Type (especially for passwords) -->
+    <!-- app:inputType="129" -->              <!-- Text Password (hidden) -->
+    <!-- app:inputType="18"  -->              <!-- Number Password -->
+    <!-- app:inputType="1"   -->              <!-- Normal text (default) -->
+    />
 ```
 
 
@@ -120,34 +136,46 @@ input.setErrorText("Error message");
 ---
 ## 🎨 Attributes
 
+
 | Attribute | Description |
 |----------|------------|
 | hintText | Hint text |
-| input | Default text |
+| input | Default input text |
 | helperText | Helper message |
 | warningText | Warning message |
 | errorText | Error message |
-| hintIcon | Hint icon |
+| hintIcon | Icon shown inside the hint |
 | passShow | Show password icon |
 | passHide | Hide password icon |
-| activeBackground | Active background |
-| inactiveBackground | Inactive background |
+| helperIcon | Helper icon |
+| warningIcon | Warning icon |
+| errorIcon | Error icon |
+| activeBackground | Background when the field is focused/active |
+| inactiveBackground | Default (inactive) background |
 | hintColor | Default hint color |
-| hintActiveColor | Active hint color |
-| inputColor | Input text color |
-| helperColor | Helper color |
-| warningColor | Warning color |
-| errorColor | Error color |
-| inputType | Input type |
-| rightDirection | RTL support |
+| hintActiveColor | Hint color when focused |
+| inputColor | Color of text inside the input field |
+| helperColor | Helper text and icon color |
+| warningColor | Warning text and icon color |
+| errorColor | Error text and icon color |
+| inputType | Input type (especially useful for passwords) |
+| rightDirection | Enable RTL layout (true/false) |
+| hintFamily | Font family for hint (@font/ resource or font name) |
+| hintSize | Text size for hint |
+| inputFamily | Font family for input field |
+| inputSize | Text size for input field |
+| helperFamily | Font family for helper/warning/error texts |
+| helperSize | Text size for helper/warning/error texts |
 
 ---
 
 ## 🔤 Input Types
 
 ```xml
-app:inputType="1"     <!-- Normal -->
-app:inputType="129"   <!-- Password -->
+app:inputType="1"      <!-- Normal Text -->
+app:inputType="129"    <!-- Password (Text) -->
+app:inputType="18"     <!-- Password (Number) -->
+app:inputType="145"    <!-- Visible Password -->
 ```
 
 ---
