@@ -188,22 +188,6 @@ app:rightDirection="true"
 
 ---
 
-## 🎬 Demo (GIF / Video)
-
-### GIF
-
-```md
-![Demo](docs/demo/editify.gif)
-```
-
-### Video
-
-```
-https://your-video-link.com
-```
-
----
-
 ## 📄 License
 MIT License
 
