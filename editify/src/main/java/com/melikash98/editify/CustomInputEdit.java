@@ -31,7 +31,24 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
 
+/**
+ * CustomInputEdit - A highly customizable Material-style EditText with floating hint animation.
+ * <p>
+ * Features:
+ * - Smooth floating hint with scale animation
+ * - Helper, Warning, and Error states with optional icons
+ * - Built-in password visibility toggle
+ * - Full RTL/LTR layout support
+ * - Custom font and text size support for hint, input, and helper texts
+ * - Flexible background and color customization via XML attributes
+ *
+ * @author Melika Sh98
+ * @version 1.0
+ */
+
 public class CustomInputEdit extends ConstraintLayout {
+
+    // ==================== Views ====================
     private AppCompatEditText editInput;
     private ConstraintLayout hintLayout;
     private ConstraintLayout containerLayout;
@@ -45,11 +62,15 @@ public class CustomInputEdit extends ConstraintLayout {
     private ImageView errorIconView;
     private TextView errorTextView;
 
+    // ==================== Drawables ====================
+
     private Drawable activeBackground;
     private Drawable inactiveBackground;
 
     private Drawable passShowDrawable;
     private Drawable passHideDrawable;
+
+    // ==================== Colors ====================
 
     private int hintDefaultColor;
     private int hintActiveColor;
@@ -60,16 +81,23 @@ public class CustomInputEdit extends ConstraintLayout {
     private ConstraintLayout helperBack;
     private ConstraintLayout wrongBack;
     private ConstraintLayout errorBack;
+
+    // ==================== Text Styling ====================
+
     private float helperTextSize;
     private String helperTextFamily;
     private int helperFontResId;
     private int helperTextStyle;
+
+    // ==================== State ====================
 
     private boolean isFocus = false;
     private boolean isActive = false;
     private boolean isRightDirection = false;
     private boolean isPasswordVisible = false;
 
+
+    // ==================== Constructors ====================
 
     public CustomInputEdit(@NonNull Context context) {
         this(context, null);
@@ -84,8 +112,15 @@ public class CustomInputEdit extends ConstraintLayout {
         init(context, attrs);
     }
 
+    /**
+     * Main initialization method.
+     * Inflates the layout and reads all custom attributes from XML.
+     */
+
     private void init(@NonNull Context context, @Nullable AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.custom_input_field, this, true);
+
+        // Bind views
 
         editInput = findViewById(R.id.editInput);
         hintLayout = findViewById(R.id.hintLayout);
@@ -119,6 +154,7 @@ public class CustomInputEdit extends ConstraintLayout {
         if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
         }
+        applyFontToView(context, hintTextView, R.styleable.CustomInputField_hintFamily);
         float hintSize = array.getDimension(R.styleable.CustomInputField_hintSize, 0);
         if (hintSize > 0) {
             hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
@@ -138,7 +174,7 @@ public class CustomInputEdit extends ConstraintLayout {
         );
 
         int hintBgColor = array.getColor(R.styleable.CustomInputField_hintBackgroundColor, Color.WHITE);
-        Drawable hintBackground = context.getDrawable(R.drawable.hint_bg); // shape اصلی
+        Drawable hintBackground = context.getDrawable(R.drawable.hint_bg);
         if (hintBackground instanceof GradientDrawable) {
             ((GradientDrawable) hintBackground.mutate()).setColor(hintBgColor);
         } else {
@@ -147,14 +183,10 @@ public class CustomInputEdit extends ConstraintLayout {
         hintLayout.setBackground(hintBackground);
 
         // ==================== Inputs ====================
+        applyFontToView(context, editInput, R.styleable.CustomInputField_inputFamily);
         float inputSize = array.getDimension(R.styleable.CustomInputField_inputSize, 0);
         if (inputSize > 0) {
             editInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputSize);
-        }
-        String inputFamily = array.getString(R.styleable.CustomInputField_inputFamily);
-        if (!TextUtils.isEmpty(inputFamily)) {
-            Typeface inputTypeface = Typeface.create(inputFamily, Typeface.NORMAL);
-            editInput.setTypeface(inputTypeface);
         }
         String inputText = array.getString(R.styleable.CustomInputField_input);
         if (!TextUtils.isEmpty(inputText)) {
@@ -256,6 +288,35 @@ public class CustomInputEdit extends ConstraintLayout {
         post(this::updateUIState);
     }
 
+    /**
+     * Applies custom font to a TextView.
+     * Supports both @font/ resource and font family name string.
+     * Falls back to layout default if no font is provided.
+     */
+
+    private void applyFontToView(Context context, TextView view, int attrIndex) {
+        TypedArray temp = context.obtainStyledAttributes(new int[]{attrIndex}); // فقط برای گرفتن resource
+        int fontResId = temp.getResourceId(0, 0);
+        temp.recycle();
+
+        if (fontResId != 0) {
+            Typeface tf = ResourcesCompat.getFont(context, fontResId);
+            if (tf != null) view.setTypeface(tf);
+            return;
+        }
+
+        // fallback به family name
+        String family = context.obtainStyledAttributes(new int[]{attrIndex})
+                .getString(0);
+        if (!TextUtils.isEmpty(family)) {
+            view.setTypeface(Typeface.create(family, Typeface.NORMAL));
+        }
+    }
+
+    /**
+     * Returns the typeface for helper, warning, and error texts.
+     */
+
     private Typeface getHelperTypeface(Context context) {
         if (helperFontResId != 0) {
             Typeface tf = ResourcesCompat.getFont(context, helperFontResId);
@@ -266,6 +327,10 @@ public class CustomInputEdit extends ConstraintLayout {
         }
         return Typeface.create(Typeface.DEFAULT, helperTextStyle);
     }
+
+    /**
+     * Applies correct colors to helper, warning, and error texts and their icons.
+     */
 
     private void applyHelperColors() {
         helperTextView.setTextColor(helperColor);
@@ -280,6 +345,10 @@ public class CustomInputEdit extends ConstraintLayout {
         if (errorIconView.getDrawable() != null)
             errorIconView.setColorFilter(errorColor, PorterDuff.Mode.SRC_IN);
     }
+
+    /**
+     * Sets up password visibility toggle if the input type is a password field.
+     */
 
     private void setupPasswordToggle() {
         if (passShowDrawable == null || passHideDrawable == null) return;
@@ -299,6 +368,10 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    /**
+     * Toggles between visible and hidden password and updates the icon accordingly.
+     */
+
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
 
@@ -312,6 +385,10 @@ public class CustomInputEdit extends ConstraintLayout {
         iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
         editInput.setSelection(editInput.getText().length());
     }
+
+    /**
+     * Configures layout constraints and gravity based on RTL or LTR direction.
+     */
 
     private void setupDirectionConstraints() {
         ConstraintSet containerSet = new ConstraintSet();
@@ -367,6 +444,7 @@ public class CustomInputEdit extends ConstraintLayout {
         setupHelperDirection(wrongBack, R.id.warningIcon, R.id.warningText);
         setupHelperDirection(errorBack, R.id.errorIcon, R.id.errorText);
     }
+
     private void setupHelperDirection(ConstraintLayout parent, int iconId, int textId) {
         if (parent == null) return;
         ConstraintSet set = new ConstraintSet();
@@ -392,12 +470,21 @@ public class CustomInputEdit extends ConstraintLayout {
 
         set.applyTo(parent);
     }
+
+    /**
+     * Updates the overall UI state based on focus and text input.
+     */
+
     private void updateUIState() {
         boolean shouldActivate = isFocus || isActive;
         editInput.setBackground(shouldActivate ? activeBackground : inactiveBackground);
         updateHintAppearance(shouldActivate);
         updateHintPosition();
     }
+
+    /**
+     * Updates hint text and icon color based on active state.
+     */
 
     private void updateHintAppearance(boolean shouldActivate) {
         int targetColor = shouldActivate ? hintActiveColor : hintDefaultColor;
@@ -407,6 +494,10 @@ public class CustomInputEdit extends ConstraintLayout {
             hintIcon.setColorFilter(targetColor, PorterDuff.Mode.SRC_IN);
         }
     }
+
+    /**
+     * Animates the hint label position and scale (floating effect).
+     */
 
     private void updateHintPosition() {
         hintLayout.post(() -> {
@@ -441,20 +532,38 @@ public class CustomInputEdit extends ConstraintLayout {
         );
     }
 
+    // ==================== Public API Methods ====================
+
+    /**
+     * Returns the trimmed text from the input field.
+     */
+
     public String getText() {
         return editInput.getText().toString().trim();
     }
+
+    /**
+     * Sets text to the input field.
+     */
 
     public void setText(String text) {
         editInput.setText(text);
     }
 
+    /**
+     * Sets helper text and shows/hides the helper section.
+     */
+
     public void setHelperText(String text) {
         if (helperTextView != null) {
             helperTextView.setText(text != null ? text : "");
-            helperBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);  // ← اینجا والد
+            helperBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
+
+    /**
+     * Sets warning text and shows/hides the warning section.
+     */
 
     public void setWarningText(String text) {
         if (warningTextView != null) {
@@ -462,6 +571,10 @@ public class CustomInputEdit extends ConstraintLayout {
             wrongBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
+
+    /**
+     * Sets error text and shows/hides the error section.
+     */
 
     public void setErrorText(String text) {
         if (errorTextView != null) {
