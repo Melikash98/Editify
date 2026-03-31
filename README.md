@@ -1,9 +1,9 @@
 # Editify
-[![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 
-**A beautiful and lightweight Material-style EditText library with smooth floating hint animation.**
 [![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**A beautiful and lightweight Material-style EditText library with smooth floating hint animation.**
 
 
 **A beautiful, fully customizable, animated Android input field library with floating hint, password toggle, helper/warning/error messages, RTL support, and smooth animations.**
