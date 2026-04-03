@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/Melikash98/Haus-Suche/main/logoApp.png" alt="Logo" width="80px"   height="80px" style="margin-right: 10px;padding-top: 6rem;" /> # Editify
+<img src="https://raw.githubusercontent.com/Melikash98/Editify/main/editifyLogo.png" alt="Logo" width="80px"   height="80px" style="margin-right: 10px;padding-top: 6rem;" />
+# Editify
 
 [![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
