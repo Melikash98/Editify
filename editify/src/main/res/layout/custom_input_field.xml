@@ -85,13 +85,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/helperBack"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginTop="7dp"
+            android:maxWidth="300dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/editInput"
-            app:layout_constraintEnd_toEndOf="@id/editInput"
             app:layout_constraintTop_toBottomOf="@id/editInput">
 
             <ImageView
@@ -100,34 +100,31 @@
                 android:layout_height="22dp"
                 android:background="@drawable/helper"
                 android:backgroundTint="@color/green"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/helperText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:maxLines="0"
-                android:breakStrategy="balanced"
                 android:text="Helper"
                 android:textColor="@color/green"
                 android:textFontWeight="800"
                 android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/helperIcon"
                 app:layout_constraintStart_toEndOf="@id/helperIcon"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/helperIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/wrongBack"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginTop="7dp"
+            android:maxWidth="300dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/editInput"
-            app:layout_constraintEnd_toEndOf="@id/editInput"
             app:layout_constraintTop_toBottomOf="@id/editInput">
 
             <ImageView
@@ -135,35 +132,31 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:background="@drawable/warning"
-                android:backgroundTint="@color/yellow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:backgroundTint="@color/yellow" />
 
             <TextView
                 android:id="@+id/warningText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:maxLines="0"
-                android:breakStrategy="balanced"
                 android:text="Warning"
                 android:textColor="@color/yellow"
                 android:textFontWeight="800"
                 android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/warningIcon"
                 app:layout_constraintStart_toEndOf="@id/warningIcon"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/warningIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/errorBack"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginTop="7dp"
+            android:maxWidth="300dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/editInput"
-            app:layout_constraintEnd_toEndOf="@id/editInput"
             app:layout_constraintTop_toBottomOf="@id/editInput">
 
             <ImageView
@@ -172,22 +165,19 @@
                 android:layout_height="22dp"
                 android:background="@drawable/ic_error"
                 android:backgroundTint="@color/red"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/errorText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:maxLines="0"
-                android:breakStrategy="balanced"
                 android:text="Error"
                 android:textColor="@color/red"
                 android:textFontWeight="800"
                 android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/errorIcon"
                 app:layout_constraintStart_toEndOf="@id/errorIcon"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/errorIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
