@@ -454,6 +454,7 @@ public class CustomInputEdit extends ConstraintLayout {
         set.clear(iconId, ConstraintSet.END);
         set.clear(iconId, ConstraintSet.TOP);
         set.clear(iconId, ConstraintSet.BOTTOM);
+
         set.clear(textId, ConstraintSet.START);
         set.clear(textId, ConstraintSet.END);
         set.clear(textId, ConstraintSet.TOP);
@@ -463,12 +464,10 @@ public class CustomInputEdit extends ConstraintLayout {
 
         if (isRightDirection) {
             set.connect(iconId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
-
             set.connect(textId, ConstraintSet.END, iconId, ConstraintSet.START, (int) dp(15));
             set.connect(textId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
         } else {
             set.connect(iconId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
-
             set.connect(textId, ConstraintSet.START, iconId, ConstraintSet.END, (int) dp(15));
             set.connect(textId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
         }
