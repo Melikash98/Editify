@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Melikash98/Editify/main/editifyLogo.png" alt="Logo" width="100px"   height="100px" style="margin-right: 10px;padding-top: 6rem;" />
+<img src="https://raw.githubusercontent.com/Melikash98/Editify/main/editifyLogo.png" alt="Logo" width="500px"   height="100px" style="margin-right: 10px;padding-top: 6rem;" />
 
 # Editify
 
