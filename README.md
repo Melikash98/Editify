@@ -28,13 +28,13 @@ Editify provides a modern `CustomInputEdit` component that replaces the default 
 
 ---
 
-## 📺 Demo
+##  Demo
 
 <img src="https://raw.githubusercontent.com/Melikash98/Editify/main/textLib.gif" alt="textLib.gif" width="45%"   height="45%" style="margin-right: 10px;padding-top: 6rem;" />
 
 ---
 
-## 📦 Installation
+##  Installation
 
 ### 1. Add JitPack repository
 
@@ -42,21 +42,21 @@ In your **root** `settings.gradle` (or `settings.gradle.kts`):
 
 ```gradle
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
+		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+		repositories {
+			mavenCentral()
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 ### Step 2: Add dependency
 
 ```gradle
 dependencies {
-     implementation 'com.github.Melikash98:Editify:v1.4.8'
-}
+	        implementation 'com.github.Melikash98:Editify:v1.5.3'
+	}
 ```
-## 🛠️ Usage
+##  Usage
 
 ### XML
 ```xml
@@ -103,15 +103,15 @@ dependencies {
     app:rightDirection="false"                <!-- Set true for RTL languages -->
 
     <!-- Input Type (especially for passwords) -->
-    <!-- app:inputType="129" -->              <!-- Text Password (hidden) -->
-    <!-- app:inputType="18"  -->              <!-- Number Password -->
-    <!-- app:inputType="1"   -->              <!-- Normal text (default) -->
+    <!-- app:inputType="textPassword"  -->              <!-- Text Password (hidden) -->
+    <!-- app:inputType="numberPassword"  -->              <!-- Number Password -->
+    <!-- app:inputType="text"   -->              <!-- Normal text (default) -->
     />
 ```
 
 
 ---
-## 🎯 Java Usage
+##  Java Usage
 
 ```java
 // Get reference to the custom input view
@@ -132,9 +132,41 @@ input.setWarningText("Warning message");
 // Show error message (red state)
 input.setErrorText("Error message");
 ```
-
 ---
-## 🎨 Attributes
+
+## Kotlin Usage
+---
+```kotlin
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var emailInput: CustomInputEdit
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        emailInput = findViewById(R.id.emailInput)
+
+        // Set text programmatically
+        emailInput.setText("test@example.com")
+
+        // Get input text
+        val value = emailInput.getText()
+
+        // Update helper message
+        emailInput.setHelperText("Looks good")
+
+        // Show warning
+        emailInput.setWarningText("Please double check your email")
+
+        // Show error
+        emailInput.setErrorText("Invalid email address")
+    }
+}
+```
+---
+
+##  Attributes
 
 
 | Attribute | Description |
@@ -169,18 +201,17 @@ input.setErrorText("Error message");
 
 ---
 
-## 🔤 Input Types
+##  Input Types
 
 ```xml
-app:inputType="1"      <!-- Normal Text -->
-app:inputType="129"    <!-- Password (Text) -->
-app:inputType="18"     <!-- Password (Number) -->
-app:inputType="145"    <!-- Visible Password -->
+app:inputType="text"      <!-- Normal Text -->
+app:inputType="numberPassword"    <!-- Password (Text) -->
+app:inputType="textPassword"    <!-- Password (Number) -->
 ```
 
 ---
 
-## 📱 RTL Support
+##  RTL Support
 
 ```xml
 app:rightDirection="true"
@@ -188,7 +219,7 @@ app:rightDirection="true"
 
 ---
 
-## 📄 License
+##  License
 This project is licensed under the MIT License.
 
 ---
@@ -199,6 +230,8 @@ android custom edittext, floating hint edittext, material input field android, p
 ---
 ## 👩‍💻 Author
 
-Melikash98
+If you find MorphNavBar useful, please consider giving it a ⭐ star on GitHub — it helps the project grow and motivates further development.
+
+For feature requests, improvements, bug reports, or similar suggestions, please send me a message or open an issue. Your feedback is highly appreciated.
 
 
