@@ -354,9 +354,19 @@ public class CustomInputEdit extends ConstraintLayout {
         if (passShowDrawable == null || passHideDrawable == null) return;
 
         int currentType = editInput.getInputType();
-        boolean isPassword = (currentType & InputType.TYPE_TEXT_VARIATION_PASSWORD) != 0 ||
-                (currentType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) != 0 ||
-                (currentType & InputType.TYPE_NUMBER_VARIATION_PASSWORD) != 0;
+        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
+        int variation   = currentType & InputType.TYPE_MASK_VARIATION;
+
+        // 129 → class=1(TEXT),  variation=128(PASSWORD)   ✓
+        // 18  → class=2(NUMBER), variation=16(PASSWORD)   ✓
+        // 1   → class=1(TEXT),  variation=0(NORMAL)       → false ✓
+        boolean isPassword =
+                (typeClass == InputType.TYPE_CLASS_TEXT &&
+                        (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
+                                variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
+                        ||
+                        (typeClass == InputType.TYPE_CLASS_NUMBER &&
+                                variation == InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 
         if (isPassword) {
             iconPass.setVisibility(View.VISIBLE);
@@ -375,15 +385,27 @@ public class CustomInputEdit extends ConstraintLayout {
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
 
-        if (isPasswordVisible) {
-            editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            iconPass.setImageDrawable(passShowDrawable);
+        int currentType = editInput.getInputType();
+        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
+
+        if (typeClass == InputType.TYPE_CLASS_NUMBER) {
+            editInput.setInputType(isPasswordVisible
+                    ? InputType.TYPE_CLASS_NUMBER
+                    : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD // 18
+            );
         } else {
-            editInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            iconPass.setImageDrawable(passHideDrawable);
+            editInput.setInputType(isPasswordVisible
+                    ? InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD  // 129
+            );
         }
+
+        iconPass.setImageDrawable(isPasswordVisible ? passShowDrawable : passHideDrawable);
         iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
-        editInput.setSelection(editInput.getText().length());
+
+        if (editInput.getText() != null) {
+            editInput.setSelection(editInput.getText().length());
+        }
     }
 
     /**

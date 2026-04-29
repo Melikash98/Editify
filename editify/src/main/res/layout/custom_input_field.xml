@@ -47,8 +47,8 @@
 
             <ImageView
                 android:id="@+id/iconStart"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/icon"
                 android:tint="@color/gray"
                 app:layout_constraintBottom_toBottomOf="parent"
