@@ -244,18 +244,20 @@ public class CustomInputEdit extends ConstraintLayout {
         passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
         passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
         passIconColor = array.getColor(R.styleable.CustomInputField_passIconColor, Color.GRAY);
-        int inputType = array.getInt(R.styleable.CustomInputField_inputType,
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+
+        int inputType = array.getInt(R.styleable.CustomInputField_inputType, -1);
 
         array.recycle();
 
-        if (inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL)) {
-            TypedArray androidArray = context.obtainStyledAttributes(attrs,
-                    new int[]{android.R.attr.inputType});
-            inputType = androidArray.getInt(0, inputType);
+        if (inputType == -1) {
+            TypedArray androidArray = context.obtainStyledAttributes(
+                    attrs, new int[]{android.R.attr.inputType});
+            inputType = androidArray.getInt(0,
+                    InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
             androidArray.recycle();
         }
         editInput.setInputType(inputType);
+        setupPasswordToggle();
 
         setupDirectionConstraints();
 
@@ -281,7 +283,7 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         });
 
-        setupPasswordToggle();
+
 
         hintLayout.bringToFront();
         iconPass.bringToFront();
@@ -354,12 +356,16 @@ public class CustomInputEdit extends ConstraintLayout {
         if (passShowDrawable == null || passHideDrawable == null) return;
 
         int currentType = editInput.getInputType();
-        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
-        int variation   = currentType & InputType.TYPE_MASK_VARIATION;
 
-        // 129 → class=1(TEXT),  variation=128(PASSWORD)   ✓
-        // 18  → class=2(NUMBER), variation=16(PASSWORD)   ✓
-        // 1   → class=1(TEXT),  variation=0(NORMAL)       → false ✓
+        int typeClass = currentType & InputType.TYPE_MASK_CLASS;
+        int variation = currentType & InputType.TYPE_MASK_VARIATION;
+
+        /*
+         * 129 = TEXT(1) | PASSWORD(128)  → class=1, variation=128 ✓
+         * 291 = TEXT(1) | PASSWORD(128) | FLAG(162) → class=1, variation=128 ✓
+         *  18 = NUMBER(2) | PASSWORD(16) → class=2, variation=16  ✓
+         *   1 = TEXT(1) | NORMAL(0)      → class=1, variation=0   → false ✓
+         */
         boolean isPassword =
                 (typeClass == InputType.TYPE_CLASS_TEXT &&
                         (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
@@ -386,17 +392,17 @@ public class CustomInputEdit extends ConstraintLayout {
         isPasswordVisible = !isPasswordVisible;
 
         int currentType = editInput.getInputType();
-        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
+        int typeClass = currentType & InputType.TYPE_MASK_CLASS;
 
         if (typeClass == InputType.TYPE_CLASS_NUMBER) {
             editInput.setInputType(isPasswordVisible
                     ? InputType.TYPE_CLASS_NUMBER
-                    : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD // 18
+                    : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD
             );
         } else {
             editInput.setInputType(isPasswordVisible
                     ? InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD  // 129
+                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
             );
         }
 
