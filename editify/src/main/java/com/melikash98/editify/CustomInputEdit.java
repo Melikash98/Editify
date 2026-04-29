@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,9 +22,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -609,5 +612,165 @@ public class CustomInputEdit extends ConstraintLayout {
             errorTextView.setText(text != null ? text : "");
             errorBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
+    }
+    private OnFocusChangeListener outerFocusChangeListener;
+    public AppCompatEditText getEditText() {
+        return editInput;
+    }
+    public String getRawText() {
+        return editInput.getText() != null ? editInput.getText().toString() : "";
+    }
+
+    public void setText(CharSequence text) {
+        editInput.setText(text);
+    }
+
+    public void append(CharSequence text) {
+        editInput.append(text);
+    }
+    public void addTextChangedListener(TextWatcher watcher) {
+        editInput.addTextChangedListener(watcher);
+    }
+    public void removeTextChangedListener(TextWatcher watcher) {
+        editInput.removeTextChangedListener(watcher);
+    }
+    @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        outerFocusChangeListener = l;
+    }
+
+    public void requestInputFocus() {
+        editInput.requestFocus();
+    }
+
+    public void clearInputFocus() {
+        editInput.clearFocus();
+    }
+
+    public boolean isInputFocused() {
+        return editInput.isFocused();
+    }
+    public void showKeyboard() {
+        editInput.requestFocus();
+        InputMethodManager imm = (InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.showSoftInput(editInput, InputMethodManager.SHOW_IMPLICIT);
+    }
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(editInput.getWindowToken(), 0);
+    }
+    public void setImeOptions(int imeOptions) {
+        editInput.setImeOptions(imeOptions);
+    }
+
+    public int getImeOptions() {
+        return editInput.getImeOptions();
+    }
+    public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
+        editInput.setOnEditorActionListener(listener);
+    }
+    public void setInputType(int type) {
+        editInput.setInputType(type);
+        setupPasswordToggle();
+    }
+    public int getInputType() {
+        return editInput.getInputType();
+    }
+    public void setFilters(InputFilter[] filters) {
+        editInput.setFilters(filters);
+    }
+
+    public InputFilter[] getFilters() {
+        return editInput.getFilters();
+    }
+    public void setSelection(int index) {
+        editInput.setSelection(index);
+    }
+
+    public void setSelection(int start, int stop) {
+        editInput.setSelection(start, stop);
+    }
+
+    public void selectAll() {
+        editInput.selectAll();
+    }
+
+    public int getSelectionStart() {
+        return editInput.getSelectionStart();
+    }
+
+    public int getSelectionEnd() {
+        return editInput.getSelectionEnd();
+    }
+    public void setSelectionToEnd() {
+        if (editInput.getText() != null)
+            editInput.setSelection(editInput.getText().length());
+    }
+    public void setHintText(String hint) {
+        if (hintTextView != null) hintTextView.setText(hint);
+    }
+
+    public CharSequence getHintText() {
+        return hintTextView != null ? hintTextView.getText() : "";
+    }
+    public void setTextColor(@ColorInt int color) {
+        editInput.setTextColor(color);
+    }
+
+    public void setTextSize(float sizeInSp) {
+        editInput.setTextSize(sizeInSp);
+    }
+
+    public void setTextSize(int unit, float size) {
+        editInput.setTextSize(unit, size);
+    }
+
+    public void setTypeface(Typeface tf) {
+        editInput.setTypeface(tf);
+    }
+
+    public void setTypeface(Typeface tf, int style) {
+        editInput.setTypeface(tf, style);
+    }
+
+    public Typeface getTypeface() {
+        return editInput.getTypeface();
+    }
+    public void setMaxLines(int maxLines) {
+        editInput.setMaxLines(maxLines);
+    }
+
+    public void setSingleLine(boolean singleLine) {
+        editInput.setSingleLine(singleLine);
+    }
+
+    public void setMaxLength(int maxLength) {
+        editInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+    }
+
+    public void setLines(int lines) {
+        editInput.setLines(lines);
+    }
+
+    public void setMinLines(int minLines) {
+        editInput.setMinLines(minLines);
+    }
+    public void setInputEnabled(boolean enabled) {
+        editInput.setEnabled(enabled);
+    }
+
+    public boolean isInputEnabled() {
+        return editInput.isEnabled();
+    }
+    public void setKeyListener(android.text.method.KeyListener input) {
+        editInput.setKeyListener(input);
+    }
+
+    public android.text.method.KeyListener getKeyListener() {
+        return editInput.getKeyListener();
     }
 }
