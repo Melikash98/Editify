@@ -53,7 +53,7 @@ dependencyResolutionManagement {
 
 ```gradle
 dependencies {
-	        implementation 'com.github.Melikash98:Editify:v1.5.3'
+	         implementation 'com.github.Melikash98:Editify:v1.5.4'
 	}
 ```
 ##  Usage
