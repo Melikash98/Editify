@@ -34,6 +34,10 @@
         <attr name="warningColor" format="color" />
         <attr name="errorColor" format="color" />
 
+        <!-- Input multiline / lines -->
+        <attr name="inputMaxLines" format="integer" />
+        <attr name="inputMinLines" format="integer" />
+        <attr name="inputSingleLine" format="boolean" />
 
         <!-- Fonts and Size -->
         <attr name="hintSize" format="dimension" />
@@ -60,7 +64,5 @@
 
     </declare-styleable>
 
-    <attr name="inputMaxLines" format="integer" />
-    <attr name="inputMinLines" format="integer" />
-    <attr name="inputSingleLine" format="boolean" />
+
 </resources>

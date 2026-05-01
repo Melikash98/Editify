@@ -199,23 +199,40 @@ public class CustomInputEdit extends ConstraintLayout {
                 array.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
         editInput.setTextColor(editTextColor);
         // ==================== Multiline ====================
+        int maxLines = array.getInt(R.styleable.CustomInputField_inputMaxLines, -1);
+        int minLines = array.getInt(R.styleable.CustomInputField_inputMinLines, -1);
+        boolean singleLine = array.getBoolean(R.styleable.CustomInputField_inputSingleLine, false);
+
+        // اگر XML از android:maxLines / android:minLines / android:singleLine هم استفاده کند، اینجا پشتیبانی می‌شود
         TypedArray androidAttrs = context.obtainStyledAttributes(
-                attrs, new int[]{
+                attrs,
+                new int[]{
                         android.R.attr.maxLines,
                         android.R.attr.minLines,
-                        android.R.attr.singleLine
-                });
+                        android.R.attr.singleLine,
+                        android.R.attr.inputType
+                }
+        );
 
-        int maxLines = androidAttrs.getInt(0, 1);
-        int minLines = androidAttrs.getInt(1, 1);
-        boolean singleLine = androidAttrs.getBoolean(2, true);
+        int androidMaxLines = androidAttrs.getInt(0, -1);
+        int androidMinLines = androidAttrs.getInt(1, -1);
+        boolean androidSingleLine = androidAttrs.getBoolean(2, false);
+        int androidInputType = androidAttrs.getInt(
+                3,
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL
+        );
         androidAttrs.recycle();
 
-        editInput.setSingleLine(singleLine);
-        if (!singleLine) {
-            editInput.setMaxLines(maxLines);
-            editInput.setMinLines(minLines);
-        }
+        if (maxLines == -1) maxLines = androidMaxLines;
+        if (minLines == -1) minLines = androidMinLines;
+        if (singleLine == false && androidSingleLine) singleLine = true;
+
+        if (maxLines == -1) maxLines = 5;
+        if (minLines == -1) minLines = 1;
+
+        editInput.setInputType(androidInputType);
+
+        applyMultilineConfig(singleLine, minLines, maxLines);
         // ==================== Helpers ====================
         helperColor = array.getColor(R.styleable.CustomInputField_helperColor, getResources().getColor(R.color.green));
         warningColor = array.getColor(R.styleable.CustomInputField_warningColor, getResources().getColor(R.color.yellow));
@@ -808,5 +825,17 @@ public class CustomInputEdit extends ConstraintLayout {
 
     public android.text.method.KeyListener getKeyListener() {
         return editInput.getKeyListener();
+    }
+    private void applyMultilineConfig(boolean singleLine, int minLines, int maxLines) {
+        if (singleLine) {
+            editInput.setSingleLine(true);
+            editInput.setHorizontallyScrolling(true);
+        } else {
+            editInput.setSingleLine(false);
+            editInput.setHorizontallyScrolling(false);
+            editInput.setMinLines(minLines);
+            editInput.setMaxLines(maxLines);
+            editInput.setInputType(editInput.getInputType() | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        }
     }
 }
