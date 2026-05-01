@@ -53,7 +53,7 @@ dependencyResolutionManagement {
 
 ```gradle
 dependencies {
-	         implementation 'com.github.Melikash98:Editify:v1.5.4'
+	          implementation 'com.github.Melikash98:Editify:v1.5.5'
 	}
 ```
 ##  Usage
@@ -86,6 +86,11 @@ dependencies {
     app:helperFamily="@font/vazirmatn_light"  <!-- Helper/Warning/Error font -->
     app:helperSize="13.5sp"                   <!-- Helper/Warning/Error text size -->
 
+    <!-- Multiline (optional) -->
+    android:singleLine="false"               <!-- false = multiline, true = single line -->
+    android:maxLines="5"                     <!-- Max lines before scroll -->
+    android:minLines="1"                     <!-- Min height in lines -->
+
     <!-- Background states -->
     app:activeBackground="@drawable/input_active"     <!-- Background when focused -->
     app:inactiveBackground="@drawable/input_inactive" <!-- Default background -->
@@ -107,6 +112,7 @@ dependencies {
     <!-- app:inputType="numberPassword"  -->              <!-- Number Password -->
     <!-- app:inputType="text"   -->              <!-- Normal text (default) -->
     />
+
 ```
 
 
