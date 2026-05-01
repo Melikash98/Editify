@@ -203,7 +203,6 @@ public class CustomInputEdit extends ConstraintLayout {
         int minLines = array.getInt(R.styleable.CustomInputField_inputMinLines, -1);
         boolean singleLine = array.getBoolean(R.styleable.CustomInputField_inputSingleLine, false);
 
-        // اگر XML از android:maxLines / android:minLines / android:singleLine هم استفاده کند، اینجا پشتیبانی می‌شود
         TypedArray androidAttrs = context.obtainStyledAttributes(
                 attrs,
                 new int[]{
@@ -230,9 +229,6 @@ public class CustomInputEdit extends ConstraintLayout {
         if (maxLines == -1) maxLines = 5;
         if (minLines == -1) minLines = 1;
 
-        editInput.setInputType(androidInputType);
-
-        applyMultilineConfig(singleLine, minLines, maxLines);
         // ==================== Helpers ====================
         helperColor = array.getColor(R.styleable.CustomInputField_helperColor, getResources().getColor(R.color.green));
         warningColor = array.getColor(R.styleable.CustomInputField_warningColor, getResources().getColor(R.color.yellow));
@@ -294,6 +290,7 @@ public class CustomInputEdit extends ConstraintLayout {
             androidArray.recycle();
         }
         editInput.setInputType(inputType);
+        applyMultilineConfig(singleLine, minLines, maxLines);
         setupPasswordToggle();
 
         setupDirectionConstraints();
@@ -333,7 +330,7 @@ public class CustomInputEdit extends ConstraintLayout {
      */
 
     private void applyFontToView(Context context, TextView view, int attrIndex) {
-        TypedArray temp = context.obtainStyledAttributes(new int[]{attrIndex}); // فقط برای گرفتن resource
+        TypedArray temp = context.obtainStyledAttributes(new int[]{attrIndex});
         int fontResId = temp.getResourceId(0, 0);
         temp.recycle();
 
@@ -343,7 +340,6 @@ public class CustomInputEdit extends ConstraintLayout {
             return;
         }
 
-        // fallback به family name
         String family = context.obtainStyledAttributes(new int[]{attrIndex})
                 .getString(0);
         if (!TextUtils.isEmpty(family)) {
@@ -835,7 +831,10 @@ public class CustomInputEdit extends ConstraintLayout {
             editInput.setHorizontallyScrolling(false);
             editInput.setMinLines(minLines);
             editInput.setMaxLines(maxLines);
-            editInput.setInputType(editInput.getInputType() | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            int currentType = editInput.getInputType();
+            if ((currentType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+                editInput.setInputType(currentType | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            }
         }
     }
 }
