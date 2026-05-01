@@ -59,4 +59,8 @@
         </attr>
 
     </declare-styleable>
+
+    <attr name="inputMaxLines" format="integer" />
+    <attr name="inputMinLines" format="integer" />
+    <attr name="inputSingleLine" format="boolean" />
 </resources>

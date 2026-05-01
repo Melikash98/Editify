@@ -198,7 +198,24 @@ public class CustomInputEdit extends ConstraintLayout {
         int editTextColor = array.getColor(R.styleable.CustomInputField_inputColor,
                 array.getColor(R.styleable.CustomInputField_textColor, Color.BLACK));
         editInput.setTextColor(editTextColor);
+        // ==================== Multiline ====================
+        TypedArray androidAttrs = context.obtainStyledAttributes(
+                attrs, new int[]{
+                        android.R.attr.maxLines,
+                        android.R.attr.minLines,
+                        android.R.attr.singleLine
+                });
 
+        int maxLines = androidAttrs.getInt(0, 1);
+        int minLines = androidAttrs.getInt(1, 1);
+        boolean singleLine = androidAttrs.getBoolean(2, true);
+        androidAttrs.recycle();
+
+        editInput.setSingleLine(singleLine);
+        if (!singleLine) {
+            editInput.setMaxLines(maxLines);
+            editInput.setMinLines(minLines);
+        }
         // ==================== Helpers ====================
         helperColor = array.getColor(R.styleable.CustomInputField_helperColor, getResources().getColor(R.color.green));
         warningColor = array.getColor(R.styleable.CustomInputField_warningColor, getResources().getColor(R.color.yellow));
@@ -285,7 +302,6 @@ public class CustomInputEdit extends ConstraintLayout {
                 updateUIState();
             }
         });
-
 
 
         hintLayout.bringToFront();
@@ -613,10 +629,13 @@ public class CustomInputEdit extends ConstraintLayout {
             errorBack.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
         }
     }
+
     private OnFocusChangeListener outerFocusChangeListener;
+
     public AppCompatEditText getEditText() {
         return editInput;
     }
+
     public String getRawText() {
         return editInput.getText() != null ? editInput.getText().toString() : "";
     }
@@ -628,12 +647,15 @@ public class CustomInputEdit extends ConstraintLayout {
     public void append(CharSequence text) {
         editInput.append(text);
     }
+
     public void addTextChangedListener(TextWatcher watcher) {
         editInput.addTextChangedListener(watcher);
     }
+
     public void removeTextChangedListener(TextWatcher watcher) {
         editInput.removeTextChangedListener(watcher);
     }
+
     @Override
     public void setOnFocusChangeListener(OnFocusChangeListener l) {
         outerFocusChangeListener = l;
@@ -650,6 +672,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public boolean isInputFocused() {
         return editInput.isFocused();
     }
+
     public void showKeyboard() {
         editInput.requestFocus();
         InputMethodManager imm = (InputMethodManager)
@@ -657,12 +680,14 @@ public class CustomInputEdit extends ConstraintLayout {
         if (imm != null)
             imm.showSoftInput(editInput, InputMethodManager.SHOW_IMPLICIT);
     }
+
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.hideSoftInputFromWindow(editInput.getWindowToken(), 0);
     }
+
     public void setImeOptions(int imeOptions) {
         editInput.setImeOptions(imeOptions);
     }
@@ -670,16 +695,20 @@ public class CustomInputEdit extends ConstraintLayout {
     public int getImeOptions() {
         return editInput.getImeOptions();
     }
+
     public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
         editInput.setOnEditorActionListener(listener);
     }
+
     public void setInputType(int type) {
         editInput.setInputType(type);
         setupPasswordToggle();
     }
+
     public int getInputType() {
         return editInput.getInputType();
     }
+
     public void setFilters(InputFilter[] filters) {
         editInput.setFilters(filters);
     }
@@ -687,6 +716,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public InputFilter[] getFilters() {
         return editInput.getFilters();
     }
+
     public void setSelection(int index) {
         editInput.setSelection(index);
     }
@@ -706,10 +736,12 @@ public class CustomInputEdit extends ConstraintLayout {
     public int getSelectionEnd() {
         return editInput.getSelectionEnd();
     }
+
     public void setSelectionToEnd() {
         if (editInput.getText() != null)
             editInput.setSelection(editInput.getText().length());
     }
+
     public void setHintText(String hint) {
         if (hintTextView != null) hintTextView.setText(hint);
     }
@@ -717,6 +749,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public CharSequence getHintText() {
         return hintTextView != null ? hintTextView.getText() : "";
     }
+
     public void setTextColor(@ColorInt int color) {
         editInput.setTextColor(color);
     }
@@ -740,6 +773,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public Typeface getTypeface() {
         return editInput.getTypeface();
     }
+
     public void setMaxLines(int maxLines) {
         editInput.setMaxLines(maxLines);
     }
@@ -759,6 +793,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public void setMinLines(int minLines) {
         editInput.setMinLines(minLines);
     }
+
     public void setInputEnabled(boolean enabled) {
         editInput.setEnabled(enabled);
     }
@@ -766,6 +801,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public boolean isInputEnabled() {
         return editInput.isEnabled();
     }
+
     public void setKeyListener(android.text.method.KeyListener input) {
         editInput.setKeyListener(input);
     }

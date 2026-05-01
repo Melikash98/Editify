@@ -23,7 +23,8 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/editInput"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:background="@drawable/input_inactive"
             android:fontFamily="@font/hint"
             android:padding="15dp"
