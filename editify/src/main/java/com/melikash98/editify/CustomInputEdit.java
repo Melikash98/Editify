@@ -213,11 +213,6 @@ public class CustomInputEdit extends ConstraintLayout {
         if (hintSize > 0) {
             hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
         }
-        String hintFamily = array.getString(R.styleable.CustomInputField_hintFamily);
-        if (!TextUtils.isEmpty(hintFamily)) {
-            Typeface hintTypeface = Typeface.create(hintFamily, Typeface.NORMAL);
-            hintTextView.setTypeface(hintTypeface);
-        }
         hintDefaultColor = array.getColor(
                 R.styleable.CustomInputField_hintColor,
                 hintTextView.getCurrentTextColor()
@@ -1029,7 +1024,9 @@ public class CustomInputEdit extends ConstraintLayout {
         rebuildDropdownItems();
         dropdownScrollView.post(() -> {
             dropdownList.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(dropdownList.getWidth() > 0
+                            ? dropdownList.getWidth()
+                            : 1000, View.MeasureSpec.AT_MOST),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             );
             int totalH = dropdownList.getMeasuredHeight();
