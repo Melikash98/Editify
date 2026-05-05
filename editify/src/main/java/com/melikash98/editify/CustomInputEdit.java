@@ -1022,17 +1022,14 @@ public class CustomInputEdit extends ConstraintLayout {
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .start();
         rebuildDropdownItems();
-        dropdownScrollView.post(() -> {
-            dropdownList.measure(
-                    View.MeasureSpec.makeMeasureSpec(dropdownList.getWidth() > 0
-                            ? dropdownList.getWidth()
-                            : 1000, View.MeasureSpec.AT_MOST),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            );
-            int totalH = dropdownList.getMeasuredHeight();
-            int finalH = Math.min(totalH, dropdownMaxHeight);
+        dropdownContainer.post(() -> {
+            int itemCount = dropdownItems.size();
+            int exactH = itemCount * dropdownItemHeight;
+            int finalH = Math.min(exactH, dropdownMaxHeight);
             dropdownScrollView.getLayoutParams().height = finalH;
+            dropdownContainer.getLayoutParams().height = finalH;
             dropdownScrollView.requestLayout();
+            dropdownContainer.requestLayout();
         });
         dropdownContainer.setVisibility(View.VISIBLE);
         dropdownContainer.setAlpha(0f);
