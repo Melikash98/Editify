@@ -57,7 +57,6 @@ import java.util.List;
  */
 
 public class CustomInputEdit extends ConstraintLayout {
-
     // ==================== Views ====================
     private AppCompatEditText editInput;
     private ConstraintLayout hintLayout;
@@ -994,11 +993,10 @@ public class CustomInputEdit extends ConstraintLayout {
         if (dropdownContainer != null) {
             dropdownContainer.setCardBackgroundColor(dropdownBgColor);
         }
+        dropdownContainer.setElevation(dp(16));
+
         editInput.setOnClickListener(v -> toggleDropdown());
         iconDropdown.setOnClickListener(v -> toggleDropdown());
-        setOnClickListener(v -> {
-            if (isDropdownOpen) closeDropdown();
-        });
     }
 
     private void toggleDropdown() {
@@ -1030,14 +1028,12 @@ public class CustomInputEdit extends ConstraintLayout {
                 .start();
         rebuildDropdownItems();
         dropdownScrollView.post(() -> {
-            int totalH = dropdownList.getMeasuredHeight();
-            if (totalH == 0) dropdownList.measure(
+            dropdownList.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
             );
-            totalH = dropdownList.getMeasuredHeight();
+            int totalH = dropdownList.getMeasuredHeight();
             int finalH = Math.min(totalH, dropdownMaxHeight);
-            ScrollView.LayoutParams lp = (ScrollView.LayoutParams) dropdownList.getLayoutParams();
             dropdownScrollView.getLayoutParams().height = finalH;
             dropdownScrollView.requestLayout();
         });
@@ -1045,6 +1041,7 @@ public class CustomInputEdit extends ConstraintLayout {
         dropdownContainer.setAlpha(0f);
         dropdownContainer.setScaleY(0.85f);
         dropdownContainer.setPivotY(0f);
+        dropdownContainer.bringToFront();
         dropdownContainer.animate()
                 .alpha(1f)
                 .scaleY(1f)
@@ -1200,14 +1197,17 @@ public class CustomInputEdit extends ConstraintLayout {
         dropdownItems.add(new DropdownItem(label, value, icon));
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void addDropdownItem(String label, String value, int iconResId) {
         Drawable icon = null;
         try {
             icon = androidx.core.content.ContextCompat.getDrawable(getContext(), iconResId);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         dropdownItems.add(new DropdownItem(label, value, icon));
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void clearDropdownItems() {
         dropdownItems.clear();
         selectedDropdownItem = null;

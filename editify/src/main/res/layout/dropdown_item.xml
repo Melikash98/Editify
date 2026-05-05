@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout   xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dropdownItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="52dp"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
-    android:focusable="true"
-    android:minHeight="52dp">
-
+    android:focusable="true">
     <ImageView
         android:id="@+id/dropdownItemIcon"
+        android:src="@drawable/icon"
+        android:background="@drawable/icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
@@ -18,7 +19,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/dropdownItemText"
         android:layout_width="0dp"
@@ -26,13 +26,14 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
         android:textSize="16sp"
+        android:textColor="@color/black"
+        android:textFontWeight="800"
+        android:fontFamily="@font/hint"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/dropdownItemIcon"
         app:layout_constraintTop_toTopOf="parent" />
-
     <View
         android:id="@+id/dropdownDivider"
         android:layout_width="0dp"
