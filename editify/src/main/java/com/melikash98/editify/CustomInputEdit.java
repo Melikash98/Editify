@@ -22,6 +22,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -94,7 +95,7 @@ public class CustomInputEdit extends ConstraintLayout {
     private Typeface inputTypeface;
     private Typeface hintTypeface;
     private Typeface helperTypeface;
-
+    private int originalInputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL;
 
     // ==================== State ====================
 
@@ -300,7 +301,11 @@ public class CustomInputEdit extends ConstraintLayout {
                     InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
             androidArray.recycle();
         }
+        originalInputType = inputType;
         editInput.setInputType(inputType);
+        if (inputTypeface != null) {
+            editInput.setTypeface(inputTypeface);
+        }
         applyMultilineConfig(singleLine, minLines, maxLines);
         setupPasswordToggle();
 
@@ -473,13 +478,17 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
     private void safeSetSelectionToEnd() {
-        try {
-            if (editInput.getText() != null && editInput.getText().length() >= 0) {
-                editInput.setSelection(editInput.getText().length());
+        post(() -> {
+            try {
+                if (editInput != null && editInput.getText() != null) {
+                    int len = editInput.getText().length();
+                    if (len >= 0) {
+                        editInput.setSelection(len);
+                    }
+                }
+            } catch (Exception ignored) {
             }
-        } catch (Exception ignored) {
-            // بعضی OEM ها موقع IME transition کرش می‌دن - اینجا محافظت می‌کنیم
-        }
+        });
     }
     /**
      * Configures layout constraints and gravity based on RTL or LTR direction.
@@ -749,6 +758,7 @@ public class CustomInputEdit extends ConstraintLayout {
     }
 
     public void setInputType(int type) {
+        originalInputType = type;
         editInput.setInputType(type);
         if (inputTypeface != null) editInput.setTypeface(inputTypeface);
         setupPasswordToggle();
@@ -867,8 +877,29 @@ public class CustomInputEdit extends ConstraintLayout {
             editInput.setHorizontallyScrolling(false);
             editInput.setMinLines(minLines);
             editInput.setMaxLines(maxLines);
+
             int currentType = editInput.getInputType();
-            if ((currentType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+            int variation = currentType & InputType.TYPE_MASK_VARIATION;
+
+            boolean isSpecialVariation =
+                    variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
+                            variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD ||
+                            variation == InputType.TYPE_NUMBER_VARIATION_PASSWORD ||
+                            variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ||
+                            variation == InputType.TYPE_TEXT_VARIATION_URI ||
+                            variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS ||
+                            variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
+
+            int imeOptions = editInput.getImeOptions() & EditorInfo.IME_MASK_ACTION;
+            boolean hasActionKey =
+                    imeOptions == EditorInfo.IME_ACTION_SEARCH ||
+                            imeOptions == EditorInfo.IME_ACTION_DONE   ||
+                            imeOptions == EditorInfo.IME_ACTION_GO     ||
+                            imeOptions == EditorInfo.IME_ACTION_SEND   ||
+                            imeOptions == EditorInfo.IME_ACTION_NEXT;
+
+            if (!isSpecialVariation && !hasActionKey &&
+                    (currentType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
                 editInput.setInputType(currentType | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             }
         }
