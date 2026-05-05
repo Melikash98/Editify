@@ -24,9 +24,9 @@
             android:id="@+id/editInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="56dp"
             android:background="@drawable/input_inactive"
             android:fontFamily="@font/hint"
+            android:minHeight="56dp"
             android:padding="15dp"
             android:textAllCaps="false"
             android:textFontWeight="800"
@@ -83,6 +83,7 @@
             app:layout_constraintBottom_toBottomOf="@id/hintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/hintLayout" />
+
         <ImageView
             android:id="@+id/iconDropdown"
             android:layout_width="22dp"
@@ -94,6 +95,7 @@
             app:layout_constraintBottom_toBottomOf="@id/editInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/editInput" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/helperBack"
             android:layout_width="wrap_content"
@@ -191,6 +193,7 @@
                 app:layout_constraintStart_toEndOf="@id/errorIcon"
                 app:layout_constraintTop_toTopOf="@id/errorIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/dropdownContainer"
             android:layout_width="0dp"

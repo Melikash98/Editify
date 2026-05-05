@@ -137,6 +137,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public interface OnDropdownItemSelectedListener {
         void onItemSelected(DropdownItem item, int position);
     }
+
     // ==================== Button Mode ====================
     private boolean isButtonMode = false;
     private OnClickListener buttonClickListener;
@@ -181,10 +182,10 @@ public class CustomInputEdit extends ConstraintLayout {
         helperBack = findViewById(R.id.helperBack);
         wrongBack = findViewById(R.id.wrongBack);
         errorBack = findViewById(R.id.errorBack);
-        dropdownContainer  = findViewById(R.id.dropdownContainer);
+        dropdownContainer = findViewById(R.id.dropdownContainer);
         dropdownScrollView = findViewById(R.id.dropdownScrollView);
-        dropdownList       = findViewById(R.id.dropdownList);
-        iconDropdown       = findViewById(R.id.iconDropdown);
+        dropdownList = findViewById(R.id.dropdownList);
+        iconDropdown = findViewById(R.id.iconDropdown);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
 
@@ -523,8 +524,8 @@ public class CustomInputEdit extends ConstraintLayout {
 
     private void enforcePasswordInputType(boolean visible) {
         int currentType = editInput.getInputType();
-        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
-        int extraFlags  = currentType & ~InputType.TYPE_MASK_CLASS & ~InputType.TYPE_MASK_VARIATION;
+        int typeClass = currentType & InputType.TYPE_MASK_CLASS;
+        int extraFlags = currentType & ~InputType.TYPE_MASK_CLASS & ~InputType.TYPE_MASK_VARIATION;
 
         if (typeClass == InputType.TYPE_CLASS_NUMBER) {
             editInput.setInputType(visible
@@ -536,6 +537,7 @@ public class CustomInputEdit extends ConstraintLayout {
                     : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD | extraFlags);
         }
     }
+
     private void safeSetSelectionToEnd() {
         post(() -> {
             try {
@@ -549,6 +551,7 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         });
     }
+
     /**
      * Configures layout constraints and gravity based on RTL or LTR direction.
      */
@@ -826,6 +829,7 @@ public class CustomInputEdit extends ConstraintLayout {
         if (inputTypeface != null) editInput.setTypeface(inputTypeface);
         setupPasswordToggle();
     }
+
     public int getInputType() {
         return editInput.getInputType();
     }
@@ -891,6 +895,7 @@ public class CustomInputEdit extends ConstraintLayout {
         inputTypeface = Typeface.create(tf, style);
         editInput.setTypeface(tf, style);
     }
+
     public Typeface getTypeface() {
         return editInput.getTypeface();
     }
@@ -956,9 +961,9 @@ public class CustomInputEdit extends ConstraintLayout {
             int imeOptions = editInput.getImeOptions() & EditorInfo.IME_MASK_ACTION;
             boolean hasActionKey =
                     imeOptions == EditorInfo.IME_ACTION_SEARCH ||
-                            imeOptions == EditorInfo.IME_ACTION_DONE   ||
-                            imeOptions == EditorInfo.IME_ACTION_GO     ||
-                            imeOptions == EditorInfo.IME_ACTION_SEND   ||
+                            imeOptions == EditorInfo.IME_ACTION_DONE ||
+                            imeOptions == EditorInfo.IME_ACTION_GO ||
+                            imeOptions == EditorInfo.IME_ACTION_SEND ||
                             imeOptions == EditorInfo.IME_ACTION_NEXT;
 
             if (!isSpecialVariation && !hasActionKey &&
@@ -967,6 +972,7 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         }
     }
+
     private void setupDropdown() {
         if (!isDropdownMode) {
             iconDropdown.setVisibility(View.GONE);
@@ -988,6 +994,7 @@ public class CustomInputEdit extends ConstraintLayout {
             if (isDropdownOpen) closeDropdown();
         });
     }
+
     private void toggleDropdown() {
         if (isDropdownOpen) {
             closeDropdown();
@@ -995,6 +1002,7 @@ public class CustomInputEdit extends ConstraintLayout {
             openDropdown();
         }
     }
+
     private void openDropdown() {
         if (dropdownItems.isEmpty()) return;
 
@@ -1040,6 +1048,7 @@ public class CustomInputEdit extends ConstraintLayout {
 
         dropdownContainer.bringToFront();
     }
+
     private void closeDropdown() {
         isDropdownOpen = false;
         if (selectedDropdownItem == null) {
@@ -1063,6 +1072,7 @@ public class CustomInputEdit extends ConstraintLayout {
                 })
                 .start();
     }
+
     private void rebuildDropdownItems() {
         dropdownList.removeAllViews();
         Context ctx = getContext();
@@ -1135,6 +1145,7 @@ public class CustomInputEdit extends ConstraintLayout {
             dropdownList.addView(itemView);
         }
     }
+
     private void selectDropdownItem(DropdownItem item, int position) {
         selectedDropdownItem = item;
 
@@ -1148,10 +1159,12 @@ public class CustomInputEdit extends ConstraintLayout {
             dropdownItemSelectedListener.onItemSelected(item, position);
         }
     }
+
     private int adjustAlpha(int color, float factor) {
         int alpha = Math.round(Color.alpha(color) * factor);
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
     }
+
     private float sp(float value) {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_SP,
@@ -1159,24 +1172,29 @@ public class CustomInputEdit extends ConstraintLayout {
                 getResources().getDisplayMetrics()
         );
     }
+
     // ==================== Dropdown Public API ====================
     public void setDropdownItems(List<DropdownItem> items) {
         dropdownItems.clear();
         if (items != null) dropdownItems.addAll(items);
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void addDropdownItem(String label) {
         dropdownItems.add(new DropdownItem(label));
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void addDropdownItem(String label, String value) {
         dropdownItems.add(new DropdownItem(label, value));
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void addDropdownItem(String label, String value, Drawable icon) {
         dropdownItems.add(new DropdownItem(label, value, icon));
         if (isDropdownOpen) rebuildDropdownItems();
     }
+
     public void clearDropdownItems() {
         dropdownItems.clear();
         selectedDropdownItem = null;
@@ -1185,12 +1203,15 @@ public class CustomInputEdit extends ConstraintLayout {
         updateUIState();
         if (isDropdownOpen) closeDropdown();
     }
+
     public DropdownItem getSelectedDropdownItem() {
         return selectedDropdownItem;
     }
+
     public String getSelectedValue() {
         return selectedDropdownItem != null ? selectedDropdownItem.value : "";
     }
+
     public void setSelectedValue(String value) {
         for (int i = 0; i < dropdownItems.size(); i++) {
             if (dropdownItems.get(i).value.equals(value)) {
@@ -1199,18 +1220,23 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         }
     }
+
     public void setOnDropdownItemSelectedListener(OnDropdownItemSelectedListener listener) {
         this.dropdownItemSelectedListener = listener;
     }
+
     public void openDropdownMenu() {
         if (isDropdownMode && !isDropdownOpen) openDropdown();
     }
+
     public void closeDropdownMenu() {
         if (isDropdownMode && isDropdownOpen) closeDropdown();
     }
+
     public boolean isDropdownOpen() {
         return isDropdownOpen;
     }
+
     private void setupButtonMode() {
         if (!isButtonMode) return;
         if (isDropdownMode) return;
@@ -1229,6 +1255,7 @@ public class CustomInputEdit extends ConstraintLayout {
         editInput.setOnClickListener(internalClick);
         super.setOnClickListener(internalClick);
     }
+
     public void setOnClickListener(@Nullable OnClickListener listener) {
         if (isDropdownMode) {
             return;
