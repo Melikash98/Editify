@@ -25,6 +25,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -34,6 +36,9 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CustomInputEdit - A highly customizable Material-style EditText with floating hint animation.
@@ -105,6 +110,35 @@ public class CustomInputEdit extends ConstraintLayout {
     private boolean isPasswordVisible = false;
     private boolean isPasswordField = false;
 
+    // ==================== Dropdown ====================
+    private boolean isDropdownMode = false;
+    private boolean isDropdownOpen = false;
+    private List<DropdownItem> dropdownItems = new ArrayList<>();
+    private DropdownItem selectedDropdownItem = null;
+
+    private androidx.cardview.widget.CardView dropdownContainer;
+    private ScrollView dropdownScrollView;
+    private LinearLayout dropdownList;
+    private ImageView iconDropdown;
+
+    private int dropdownBgColor;
+    private int dropdownItemTextColor;
+    private float dropdownItemTextSize;
+    private Typeface dropdownItemTypeface;
+    private Drawable dropdownItemDefaultIcon;
+    private int dropdownSelectedColor;
+    private int dropdownDividerColor;
+    private int dropdownItemHeight;
+    private int dropdownMaxHeight;
+
+    private OnDropdownItemSelectedListener dropdownItemSelectedListener;
+
+    public interface OnDropdownItemSelectedListener {
+        void onItemSelected(DropdownItem item, int position);
+    }
+    // ==================== Button Mode ====================
+    private boolean isButtonMode = false;
+    private OnClickListener buttonClickListener;
 
     // ==================== Constructors ====================
 
@@ -146,6 +180,10 @@ public class CustomInputEdit extends ConstraintLayout {
         helperBack = findViewById(R.id.helperBack);
         wrongBack = findViewById(R.id.wrongBack);
         errorBack = findViewById(R.id.errorBack);
+        dropdownContainer  = findViewById(R.id.dropdownContainer);
+        dropdownScrollView = findViewById(R.id.dropdownScrollView);
+        dropdownList       = findViewById(R.id.dropdownList);
+        iconDropdown       = findViewById(R.id.iconDropdown);
 
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
 
@@ -157,6 +195,9 @@ public class CustomInputEdit extends ConstraintLayout {
             activeBackground = context.getDrawable(R.drawable.input_active);
         if (inactiveBackground == null)
             inactiveBackground = context.getDrawable(R.drawable.input_inactive);
+
+        // ==================== Button ====================
+        isButtonMode = array.getBoolean(R.styleable.CustomInputField_buttonMode, false);
 
         // ==================== Hint ====================
         hintTextView.setText(array.getString(R.styleable.CustomInputField_hintText));
@@ -285,6 +326,21 @@ public class CustomInputEdit extends ConstraintLayout {
 
         applyHelperColors();
 
+        // ==================== Dropdown attrs ====================
+        isDropdownMode = array.getBoolean(R.styleable.CustomInputField_dropdownMode, false);
+        dropdownBgColor = array.getColor(R.styleable.CustomInputField_dropdownBackground, Color.WHITE);
+        dropdownItemTextColor = array.getColor(R.styleable.CustomInputField_dropdownItemTextColor, Color.BLACK);
+        dropdownItemTextSize = array.getDimension(R.styleable.CustomInputField_dropdownItemTextSize, sp(16));
+        dropdownSelectedColor = array.getColor(R.styleable.CustomInputField_dropdownSelectedColor,
+                getResources().getColor(R.color.green));
+        dropdownDividerColor = array.getColor(R.styleable.CustomInputField_dropdownDividerColor,
+                getResources().getColor(R.color.gray));
+        dropdownItemHeight = (int) array.getDimension(R.styleable.CustomInputField_dropdownItemHeight, dp(52));
+        dropdownMaxHeight = (int) array.getDimension(R.styleable.CustomInputField_dropdownMaxHeight, dp(220));
+        if (array.getDrawable(R.styleable.CustomInputField_dropdownItemIcon) != null) {
+            dropdownItemDefaultIcon = array.getDrawable(R.styleable.CustomInputField_dropdownItemIcon);
+        }
+        dropdownItemTypeface = resolveFontFromAttrs(context, attrs, R.styleable.CustomInputField_dropdownItemFamily);
         // ==================== Password ====================
         passShowDrawable = array.getDrawable(R.styleable.CustomInputField_passShow);
         passHideDrawable = array.getDrawable(R.styleable.CustomInputField_passHide);
@@ -308,6 +364,8 @@ public class CustomInputEdit extends ConstraintLayout {
         }
         applyMultilineConfig(singleLine, minLines, maxLines);
         setupPasswordToggle();
+        setupDropdown();
+        setupButtonMode();
 
         setupDirectionConstraints();
 
@@ -652,6 +710,8 @@ public class CustomInputEdit extends ConstraintLayout {
 
     public void setText(String text) {
         editInput.setText(text);
+        isActive = !TextUtils.isEmpty(text);
+        updateUIState();
     }
 
     /**
@@ -699,6 +759,8 @@ public class CustomInputEdit extends ConstraintLayout {
 
     public void setText(CharSequence text) {
         editInput.setText(text);
+        isActive = !TextUtils.isEmpty(text);
+        updateUIState();
     }
 
     public void append(CharSequence text) {
@@ -902,6 +964,266 @@ public class CustomInputEdit extends ConstraintLayout {
                     (currentType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
                 editInput.setInputType(currentType | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             }
+        }
+    }
+    private void setupDropdown() {
+        if (!isDropdownMode) {
+            iconDropdown.setVisibility(View.GONE);
+            return;
+        }
+        editInput.setFocusable(false);
+        editInput.setFocusableInTouchMode(false);
+        editInput.setCursorVisible(false);
+        editInput.setLongClickable(false);
+        iconDropdown.setVisibility(View.VISIBLE);
+        iconDropdown.setImageDrawable(getContext().getDrawable(android.R.drawable.arrow_down_float));
+        iconDropdown.setColorFilter(hintDefaultColor, PorterDuff.Mode.SRC_IN);
+        if (dropdownContainer != null) {
+            dropdownContainer.setCardBackgroundColor(dropdownBgColor);
+        }
+        editInput.setOnClickListener(v -> toggleDropdown());
+        iconDropdown.setOnClickListener(v -> toggleDropdown());
+        setOnClickListener(v -> {
+            if (isDropdownOpen) closeDropdown();
+        });
+    }
+    private void toggleDropdown() {
+        if (isDropdownOpen) {
+            closeDropdown();
+        } else {
+            openDropdown();
+        }
+    }
+    private void openDropdown() {
+        if (dropdownItems.isEmpty()) return;
+
+        isDropdownOpen = true;
+        isFocus = true;
+        updateUIState();
+        iconDropdown.animate()
+                .rotation(180f)
+                .setDuration(220)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
+        rebuildDropdownItems();
+        dropdownScrollView.post(() -> {
+            int totalH = dropdownList.getMeasuredHeight();
+            if (totalH == 0) dropdownList.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
+            totalH = dropdownList.getMeasuredHeight();
+            int finalH = Math.min(totalH, dropdownMaxHeight);
+            ScrollView.LayoutParams lp = (ScrollView.LayoutParams) dropdownList.getLayoutParams();
+            dropdownScrollView.getLayoutParams().height = finalH;
+            dropdownScrollView.requestLayout();
+        });
+        dropdownContainer.setVisibility(View.VISIBLE);
+        dropdownContainer.setAlpha(0f);
+        dropdownContainer.setScaleY(0.85f);
+        dropdownContainer.setPivotY(0f);
+        dropdownContainer.animate()
+                .alpha(1f)
+                .scaleY(1f)
+                .setDuration(200)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
+
+        dropdownContainer.bringToFront();
+    }
+    private void closeDropdown() {
+        isDropdownOpen = false;
+        if (selectedDropdownItem == null) {
+            isFocus = false;
+        }
+        updateUIState();
+        iconDropdown.animate()
+                .rotation(0f)
+                .setDuration(220)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .start();
+        dropdownContainer.animate()
+                .alpha(0f)
+                .scaleY(0.85f)
+                .setDuration(180)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .withEndAction(() -> {
+                    dropdownContainer.setVisibility(View.GONE);
+                    dropdownContainer.setScaleY(1f);
+                    dropdownContainer.setAlpha(1f);
+                })
+                .start();
+    }
+    private void rebuildDropdownItems() {
+        dropdownList.removeAllViews();
+        Context ctx = getContext();
+
+        for (int i = 0; i < dropdownItems.size(); i++) {
+            final DropdownItem item = dropdownItems.get(i);
+            final int position = i;
+            boolean isSelected = selectedDropdownItem != null
+                    && selectedDropdownItem.value.equals(item.value);
+
+            View itemView = LayoutInflater.from(ctx)
+                    .inflate(R.layout.dropdown_item, dropdownList, false);
+
+            TextView textView = itemView.findViewById(R.id.dropdownItemText);
+            ImageView iconView = itemView.findViewById(R.id.dropdownItemIcon);
+            View divider = itemView.findViewById(R.id.dropdownDivider);
+
+            textView.setText(item.label);
+            textView.setTextColor(isSelected ? dropdownSelectedColor : dropdownItemTextColor);
+            if (dropdownItemTextSize > 0) {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, dropdownItemTextSize);
+            }
+            if (dropdownItemTypeface != null) {
+                textView.setTypeface(dropdownItemTypeface);
+            }
+
+            Drawable iconToShow = item.icon != null ? item.icon : dropdownItemDefaultIcon;
+            ConstraintLayout itemRoot = (ConstraintLayout) itemView;
+            ConstraintSet itemSet = new ConstraintSet();
+            itemSet.clone(itemRoot);
+
+            if (iconToShow != null) {
+                iconView.setImageDrawable(iconToShow);
+                iconView.setColorFilter(
+                        isSelected ? dropdownSelectedColor : dropdownItemTextColor,
+                        PorterDuff.Mode.SRC_IN
+                );
+                iconView.setVisibility(View.VISIBLE);
+
+                itemSet.clear(R.id.dropdownItemText, ConstraintSet.START);
+                itemSet.connect(R.id.dropdownItemText, ConstraintSet.START,
+                        R.id.dropdownItemIcon, ConstraintSet.END, (int) dp(12));
+            } else {
+                iconView.setVisibility(View.GONE);
+
+                itemSet.clear(R.id.dropdownItemText, ConstraintSet.START);
+                itemSet.connect(R.id.dropdownItemText, ConstraintSet.START,
+                        ConstraintSet.PARENT_ID, ConstraintSet.START, (int) dp(16));
+            }
+            itemSet.applyTo(itemRoot);
+
+            divider.setBackgroundColor(dropdownDividerColor);
+            divider.setVisibility(i < dropdownItems.size() - 1 ? View.VISIBLE : View.GONE);
+
+            itemView.setMinimumHeight(dropdownItemHeight);
+
+            if (isSelected) {
+                itemView.setBackgroundColor(
+                        adjustAlpha(dropdownSelectedColor, 0.08f)
+                );
+            }
+            itemView.setOnClickListener(v -> {
+                selectDropdownItem(item, position);
+            });
+            if (isRightDirection) {
+                textView.setTextDirection(View.TEXT_DIRECTION_RTL);
+                textView.setGravity(Gravity.END | Gravity.CENTER_VERTICAL);
+            }
+
+            dropdownList.addView(itemView);
+        }
+    }
+    private void selectDropdownItem(DropdownItem item, int position) {
+        selectedDropdownItem = item;
+
+        editInput.setText(item.label);
+
+        isActive = true;
+        updateUIState();
+
+        closeDropdown();
+        if (dropdownItemSelectedListener != null) {
+            dropdownItemSelectedListener.onItemSelected(item, position);
+        }
+    }
+    private int adjustAlpha(int color, float factor) {
+        int alpha = Math.round(Color.alpha(color) * factor);
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
+    }
+    private float sp(float value) {
+        return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP,
+                value,
+                getResources().getDisplayMetrics()
+        );
+    }
+    // ==================== Dropdown Public API ====================
+    public void setDropdownItems(List<DropdownItem> items) {
+        dropdownItems.clear();
+        if (items != null) dropdownItems.addAll(items);
+        if (isDropdownOpen) rebuildDropdownItems();
+    }
+    public void addDropdownItem(String label) {
+        dropdownItems.add(new DropdownItem(label));
+        if (isDropdownOpen) rebuildDropdownItems();
+    }
+    public void addDropdownItem(String label, String value) {
+        dropdownItems.add(new DropdownItem(label, value));
+        if (isDropdownOpen) rebuildDropdownItems();
+    }
+    public void addDropdownItem(String label, String value, Drawable icon) {
+        dropdownItems.add(new DropdownItem(label, value, icon));
+        if (isDropdownOpen) rebuildDropdownItems();
+    }
+    public void clearDropdownItems() {
+        dropdownItems.clear();
+        selectedDropdownItem = null;
+        editInput.setText("");
+        isActive = false;
+        updateUIState();
+        if (isDropdownOpen) closeDropdown();
+    }
+    public DropdownItem getSelectedDropdownItem() {
+        return selectedDropdownItem;
+    }
+    public String getSelectedValue() {
+        return selectedDropdownItem != null ? selectedDropdownItem.value : "";
+    }
+    public void setSelectedValue(String value) {
+        for (int i = 0; i < dropdownItems.size(); i++) {
+            if (dropdownItems.get(i).value.equals(value)) {
+                selectDropdownItem(dropdownItems.get(i), i);
+                return;
+            }
+        }
+    }
+    public void setOnDropdownItemSelectedListener(OnDropdownItemSelectedListener listener) {
+        this.dropdownItemSelectedListener = listener;
+    }
+    public void openDropdownMenu() {
+        if (isDropdownMode && !isDropdownOpen) openDropdown();
+    }
+    public void closeDropdownMenu() {
+        if (isDropdownMode && isDropdownOpen) closeDropdown();
+    }
+    public boolean isDropdownOpen() {
+        return isDropdownOpen;
+    }
+    private void setupButtonMode() {
+        if (!isButtonMode) return;
+
+        editInput.setFocusable(false);
+        editInput.setFocusableInTouchMode(false);
+        editInput.setCursorVisible(false);
+        editInput.setLongClickable(false);
+        editInput.setInputType(InputType.TYPE_NULL);
+
+        View.OnClickListener internalClick = v -> {
+            if (buttonClickListener != null) {
+                buttonClickListener.onClick(CustomInputEdit.this);
+            }
+        };
+        editInput.setOnClickListener(internalClick);
+        setOnClickListener(internalClick);
+    }
+    public void setOnClickListener(@Nullable OnClickListener listener) {
+        if (isButtonMode) {
+            buttonClickListener = listener;
+        } else {
+            super.setOnClickListener(listener);
         }
     }
 }

@@ -62,7 +62,21 @@
             <flag name="phone"             value="3"   />
         </attr>
 
+
+        <!-- ==================== Dropdown ==================== -->
+        <attr name="dropdownMode" format="boolean" />
+        <attr name="dropdownBackground" format="color|reference" />
+        <attr name="dropdownItemTextColor" format="color" />
+        <attr name="dropdownItemTextSize" format="dimension" />
+        <attr name="dropdownItemFamily" format="string|reference" />
+        <attr name="dropdownItemIcon" format="reference" />
+        <attr name="dropdownSelectedColor" format="color" />
+        <attr name="dropdownDividerColor" format="color" />
+        <attr name="dropdownItemHeight" format="dimension" />
+        <attr name="dropdownMaxHeight" format="dimension" />
+
+        <!-- Button Mode -->
+        <attr name="buttonMode" format="boolean" />
+
     </declare-styleable>
-
-
 </resources>

@@ -83,7 +83,17 @@
             app:layout_constraintBottom_toBottomOf="@id/hintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/hintLayout" />
-
+        <ImageView
+            android:id="@+id/iconDropdown"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/icon"
+            android:tint="@color/gray"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/editInput"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/editInput" />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/helperBack"
             android:layout_width="wrap_content"
@@ -181,7 +191,34 @@
                 app:layout_constraintStart_toEndOf="@id/errorIcon"
                 app:layout_constraintTop_toTopOf="@id/errorIcon" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dropdownContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp"
+            app:layout_constraintEnd_toEndOf="@id/editInput"
+            app:layout_constraintStart_toStartOf="@id/editInput"
+            app:layout_constraintTop_toBottomOf="@id/editInput">
 
+            <ScrollView
+                android:id="@+id/dropdownScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/dropdownList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </ScrollView>
+
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
