@@ -21,6 +21,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -1000,6 +1001,14 @@ public class CustomInputEdit extends ConstraintLayout {
         isDropdownOpen = true;
         isFocus = true;
         updateUIState();
+        ViewGroup rootView = (ViewGroup) getRootView();
+        if (dropdownContainer.getParent() != rootView) {
+            int[] location = new int[2];
+            containerLayout.getLocationOnScreen(location);
+        }
+        dropdownContainer.setElevation(dp(16));
+        dropdownContainer.bringToFront();
+        ((View) dropdownContainer.getParent()).invalidate();
         iconDropdown.animate()
                 .rotation(180f)
                 .setDuration(220)
@@ -1204,6 +1213,7 @@ public class CustomInputEdit extends ConstraintLayout {
     }
     private void setupButtonMode() {
         if (!isButtonMode) return;
+        if (isDropdownMode) return;
 
         editInput.setFocusable(false);
         editInput.setFocusableInTouchMode(false);
@@ -1220,6 +1230,9 @@ public class CustomInputEdit extends ConstraintLayout {
         super.setOnClickListener(internalClick);
     }
     public void setOnClickListener(@Nullable OnClickListener listener) {
+        if (isDropdownMode) {
+            return;
+        }
         if (isButtonMode) {
             buttonClickListener = listener;
         } else {
