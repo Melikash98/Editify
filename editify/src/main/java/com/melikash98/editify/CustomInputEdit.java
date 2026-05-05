@@ -91,6 +91,10 @@ public class CustomInputEdit extends ConstraintLayout {
     private String helperTextFamily;
     private int helperFontResId;
     private int helperTextStyle;
+    private Typeface inputTypeface;
+    private Typeface hintTypeface;
+    private Typeface helperTypeface;
+
 
     // ==================== State ====================
 
@@ -98,6 +102,7 @@ public class CustomInputEdit extends ConstraintLayout {
     private boolean isActive = false;
     private boolean isRightDirection = false;
     private boolean isPasswordVisible = false;
+    private boolean isPasswordField = false;
 
 
     // ==================== Constructors ====================
@@ -157,7 +162,10 @@ public class CustomInputEdit extends ConstraintLayout {
         if (array.getDrawable(R.styleable.CustomInputField_hintIcon) != null) {
             hintIcon.setImageDrawable(array.getDrawable(R.styleable.CustomInputField_hintIcon));
         }
-        applyFontToView(context, hintTextView, R.styleable.CustomInputField_hintFamily);
+        hintTypeface = resolveFontFromAttrs(context, attrs, R.styleable.CustomInputField_hintFamily);
+        if (hintTypeface != null) {
+            hintTextView.setTypeface(hintTypeface);
+        }
         float hintSize = array.getDimension(R.styleable.CustomInputField_hintSize, 0);
         if (hintSize > 0) {
             hintTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, hintSize);
@@ -186,7 +194,10 @@ public class CustomInputEdit extends ConstraintLayout {
         hintLayout.setBackground(hintBackground);
 
         // ==================== Inputs ====================
-        applyFontToView(context, editInput, R.styleable.CustomInputField_inputFamily);
+        inputTypeface = resolveFontFromAttrs(context, attrs, R.styleable.CustomInputField_inputFamily);
+        if (inputTypeface != null) {
+            editInput.setTypeface(inputTypeface);
+        }
         float inputSize = array.getDimension(R.styleable.CustomInputField_inputSize, 0);
         if (inputSize > 0) {
             editInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputSize);
@@ -295,11 +306,11 @@ public class CustomInputEdit extends ConstraintLayout {
 
         setupDirectionConstraints();
 
-        editInput.setBackground(inactiveBackground);
         editInput.setOnFocusChangeListener((v, hasFocus) -> {
             isFocus = hasFocus;
-            if (hasFocus) editInput.setBackground(activeBackground);
             updateUIState();
+            if (outerFocusChangeListener != null)
+                outerFocusChangeListener.onFocusChange(this, hasFocus);
         });
         editInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -329,22 +340,28 @@ public class CustomInputEdit extends ConstraintLayout {
      * Falls back to layout default if no font is provided.
      */
 
-    private void applyFontToView(Context context, TextView view, int attrIndex) {
-        TypedArray temp = context.obtainStyledAttributes(new int[]{attrIndex});
-        int fontResId = temp.getResourceId(0, 0);
-        temp.recycle();
+    private Typeface resolveFontFromAttrs(Context context, @Nullable AttributeSet attrs, int styleableAttrIndex) {
+        if (attrs == null) return null;
 
-        if (fontResId != 0) {
-            Typeface tf = ResourcesCompat.getFont(context, fontResId);
-            if (tf != null) view.setTypeface(tf);
-            return;
-        }
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField); // ✅ درست
+        try {
+            int fontResId = a.getResourceId(styleableAttrIndex, 0);
+            if (fontResId != 0) {
+                try {
+                    Typeface tf = ResourcesCompat.getFont(context, fontResId);
+                    if (tf != null) return tf;
+                } catch (Exception ignored) {
+                }
+            }
 
-        String family = context.obtainStyledAttributes(new int[]{attrIndex})
-                .getString(0);
-        if (!TextUtils.isEmpty(family)) {
-            view.setTypeface(Typeface.create(family, Typeface.NORMAL));
+            String familyName = a.getString(styleableAttrIndex);
+            if (!TextUtils.isEmpty(familyName)) {
+                return Typeface.create(familyName, Typeface.NORMAL);
+            }
+        } finally {
+            a.recycle();
         }
+        return null;
     }
 
     /**
@@ -385,10 +402,13 @@ public class CustomInputEdit extends ConstraintLayout {
      */
 
     private void setupPasswordToggle() {
-        if (passShowDrawable == null || passHideDrawable == null) return;
+        if (passShowDrawable == null || passHideDrawable == null) {
+            iconPass.setVisibility(View.GONE);
+            isPasswordField = false;
+            return;
+        }
 
         int currentType = editInput.getInputType();
-
         int typeClass = currentType & InputType.TYPE_MASK_CLASS;
         int variation = currentType & InputType.TYPE_MASK_VARIATION;
 
@@ -398,7 +418,7 @@ public class CustomInputEdit extends ConstraintLayout {
          *  18 = NUMBER(2) | PASSWORD(16) → class=2, variation=16  ✓
          *   1 = TEXT(1) | NORMAL(0)      → class=1, variation=0   → false ✓
          */
-        boolean isPassword =
+        isPasswordField =
                 (typeClass == InputType.TYPE_CLASS_TEXT &&
                         (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
                                 variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
@@ -406,9 +426,12 @@ public class CustomInputEdit extends ConstraintLayout {
                         (typeClass == InputType.TYPE_CLASS_NUMBER &&
                                 variation == InputType.TYPE_NUMBER_VARIATION_PASSWORD);
 
-        if (isPassword) {
+        if (isPasswordField) {
+            isPasswordVisible = false;
+            enforcePasswordInputType(false);
+
             iconPass.setVisibility(View.VISIBLE);
-            iconPass.setImageDrawable(passHideDrawable);
+            iconPass.setImageDrawable(passHideDrawable); // آیکون چشم بسته
             iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
             iconPass.setOnClickListener(v -> togglePasswordVisibility());
         } else {
@@ -422,30 +445,42 @@ public class CustomInputEdit extends ConstraintLayout {
 
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
+        enforcePasswordInputType(isPasswordVisible);
 
-        int currentType = editInput.getInputType();
-        int typeClass = currentType & InputType.TYPE_MASK_CLASS;
-
-        if (typeClass == InputType.TYPE_CLASS_NUMBER) {
-            editInput.setInputType(isPasswordVisible
-                    ? InputType.TYPE_CLASS_NUMBER
-                    : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD
-            );
-        } else {
-            editInput.setInputType(isPasswordVisible
-                    ? InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
-            );
+        if (inputTypeface != null) {
+            editInput.setTypeface(inputTypeface);
         }
 
         iconPass.setImageDrawable(isPasswordVisible ? passShowDrawable : passHideDrawable);
         iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
 
-        if (editInput.getText() != null) {
-            editInput.setSelection(editInput.getText().length());
-        }
+        safeSetSelectionToEnd();
     }
 
+    private void enforcePasswordInputType(boolean visible) {
+        int currentType = editInput.getInputType();
+        int typeClass   = currentType & InputType.TYPE_MASK_CLASS;
+        int extraFlags  = currentType & ~InputType.TYPE_MASK_CLASS & ~InputType.TYPE_MASK_VARIATION;
+
+        if (typeClass == InputType.TYPE_CLASS_NUMBER) {
+            editInput.setInputType(visible
+                    ? InputType.TYPE_CLASS_NUMBER
+                    : InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        } else {
+            editInput.setInputType(visible
+                    ? InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | extraFlags
+                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD | extraFlags);
+        }
+    }
+    private void safeSetSelectionToEnd() {
+        try {
+            if (editInput.getText() != null && editInput.getText().length() >= 0) {
+                editInput.setSelection(editInput.getText().length());
+            }
+        } catch (Exception ignored) {
+            // بعضی OEM ها موقع IME transition کرش می‌دن - اینجا محافظت می‌کنیم
+        }
+    }
     /**
      * Configures layout constraints and gravity based on RTL or LTR direction.
      */
@@ -715,9 +750,9 @@ public class CustomInputEdit extends ConstraintLayout {
 
     public void setInputType(int type) {
         editInput.setInputType(type);
+        if (inputTypeface != null) editInput.setTypeface(inputTypeface);
         setupPasswordToggle();
     }
-
     public int getInputType() {
         return editInput.getInputType();
     }
@@ -751,8 +786,7 @@ public class CustomInputEdit extends ConstraintLayout {
     }
 
     public void setSelectionToEnd() {
-        if (editInput.getText() != null)
-            editInput.setSelection(editInput.getText().length());
+        safeSetSelectionToEnd();
     }
 
     public void setHintText(String hint) {
@@ -776,13 +810,14 @@ public class CustomInputEdit extends ConstraintLayout {
     }
 
     public void setTypeface(Typeface tf) {
+        inputTypeface = tf;
         editInput.setTypeface(tf);
     }
 
     public void setTypeface(Typeface tf, int style) {
+        inputTypeface = Typeface.create(tf, style);
         editInput.setTypeface(tf, style);
     }
-
     public Typeface getTypeface() {
         return editInput.getTypeface();
     }
@@ -822,6 +857,7 @@ public class CustomInputEdit extends ConstraintLayout {
     public android.text.method.KeyListener getKeyListener() {
         return editInput.getKeyListener();
     }
+
     private void applyMultilineConfig(boolean singleLine, int minLines, int maxLines) {
         if (singleLine) {
             editInput.setSingleLine(true);
