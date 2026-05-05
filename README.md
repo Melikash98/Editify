@@ -2,7 +2,7 @@
 
 # Editify
 
-[![JitPack](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
+[![](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **A beautiful and lightweight Material-style EditText library with smooth floating hint animation.**
@@ -53,7 +53,7 @@ dependencyResolutionManagement {
 
 ```gradle
 dependencies {
-	          implementation 'com.github.Melikash98:Editify:v1.5.8'
+	            implementation 'com.github.Melikash98:Editify:v1.6.1'
 	}
 ```
 ##  Usage
@@ -111,6 +111,22 @@ dependencies {
     <!-- app:inputType="textPassword"  -->              <!-- Text Password (hidden) -->
     <!-- app:inputType="numberPassword"  -->              <!-- Number Password -->
     <!-- app:inputType="text"   -->              <!-- Normal text (default) -->
+
+
+    <!-- Dropdown -->
+     app:dropdownMode="false"                       <!-- true = disables keyboard, shows dropdown arrow -->
+    app:dropdownBackground="@color/white"          <!-- Background color of the dropdown popup card -->
+    app:dropdownItemTextColor="@color/black"       <!-- Text color of each dropdown item -->
+    app:dropdownItemTextSize="15sp"                <!-- Font size of each dropdown item text -->
+    app:dropdownItemFamily="@font/vazirmatn"       <!-- Font applied to dropdown item texts -->
+    app:dropdownItemIcon="@drawable/ic_list_item"  <!-- Default icon for items that have no custom icon -->
+    app:dropdownSelectedColor="@color/primary"     <!-- Highlight color for the currently selected item -->
+    app:dropdownDividerColor="@color/gray_light"   <!-- Color of the divider line between items -->
+    app:dropdownItemHeight="52dp"                  <!-- Height of each individual dropdown item row -->
+    app:dropdownMaxHeight="220dp"                  <!-- Max height of the dropdown popup before it scrolls -->
+
+    <!-- Button Mode -->
+    app:buttonMode="false"                         <!-- true = disables input, entire field acts as a button -->
     />
 
 ```
