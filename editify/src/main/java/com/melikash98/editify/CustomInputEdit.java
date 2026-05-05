@@ -116,7 +116,7 @@ public class CustomInputEdit extends ConstraintLayout {
     private boolean isDropdownOpen = false;
     private List<DropdownItem> dropdownItems = new ArrayList<>();
     private DropdownItem selectedDropdownItem = null;
-
+    private Drawable dropdownArrowIcon;
     private androidx.cardview.widget.CardView dropdownContainer;
     private ScrollView dropdownScrollView;
     private LinearLayout dropdownList;
@@ -339,8 +339,8 @@ public class CustomInputEdit extends ConstraintLayout {
                 getResources().getColor(R.color.gray));
         dropdownItemHeight = (int) array.getDimension(R.styleable.CustomInputField_dropdownItemHeight, dp(52));
         dropdownMaxHeight = (int) array.getDimension(R.styleable.CustomInputField_dropdownMaxHeight, dp(220));
-        if (array.getDrawable(R.styleable.CustomInputField_dropdownItemIcon) != null) {
-            dropdownItemDefaultIcon = array.getDrawable(R.styleable.CustomInputField_dropdownItemIcon);
+        if (array.getDrawable(R.styleable.CustomInputField_dropdownArrowIcon) != null) {
+            dropdownArrowIcon = array.getDrawable(R.styleable.CustomInputField_dropdownArrowIcon);
         }
         dropdownItemTypeface = resolveFontFromAttrs(context, attrs, R.styleable.CustomInputField_dropdownItemFamily);
         // ==================== Password ====================
@@ -983,7 +983,13 @@ public class CustomInputEdit extends ConstraintLayout {
         editInput.setCursorVisible(false);
         editInput.setLongClickable(false);
         iconDropdown.setVisibility(View.VISIBLE);
-        iconDropdown.setImageDrawable(getContext().getDrawable(android.R.drawable.arrow_down_float));
+        if (dropdownArrowIcon != null) {
+            iconDropdown.setImageDrawable(dropdownArrowIcon);
+        } else {
+            iconDropdown.setImageDrawable(
+                    getContext().getDrawable(android.R.drawable.arrow_down_float)
+            );
+        }
         iconDropdown.setColorFilter(hintDefaultColor, PorterDuff.Mode.SRC_IN);
         if (dropdownContainer != null) {
             dropdownContainer.setCardBackgroundColor(dropdownBgColor);
@@ -1194,7 +1200,14 @@ public class CustomInputEdit extends ConstraintLayout {
         dropdownItems.add(new DropdownItem(label, value, icon));
         if (isDropdownOpen) rebuildDropdownItems();
     }
-
+    public void addDropdownItem(String label, String value, int iconResId) {
+        Drawable icon = null;
+        try {
+            icon = androidx.core.content.ContextCompat.getDrawable(getContext(), iconResId);
+        } catch (Exception ignored) {}
+        dropdownItems.add(new DropdownItem(label, value, icon));
+        if (isDropdownOpen) rebuildDropdownItems();
+    }
     public void clearDropdownItems() {
         dropdownItems.clear();
         selectedDropdownItem = null;

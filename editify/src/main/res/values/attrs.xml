@@ -69,6 +69,7 @@
         <attr name="dropdownItemTextSize" format="dimension" />
         <attr name="dropdownItemFamily" format="string|reference" />
         <attr name="dropdownItemIcon" format="reference" />
+        <attr name="dropdownArrowIcon" format="reference" />
         <attr name="dropdownSelectedColor" format="color" />
         <attr name="dropdownDividerColor" format="color" />
         <attr name="dropdownItemHeight" format="dimension" />
