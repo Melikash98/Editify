@@ -1217,7 +1217,7 @@ public class CustomInputEdit extends ConstraintLayout {
             }
         };
         editInput.setOnClickListener(internalClick);
-        setOnClickListener(internalClick);
+        super.setOnClickListener(internalClick);
     }
     public void setOnClickListener(@Nullable OnClickListener listener) {
         if (isButtonMode) {
