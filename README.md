@@ -114,7 +114,7 @@ dependencies {
 
 
     <!-- Dropdown -->
-     app:dropdownMode="false"                       <!-- true = disables keyboard, shows dropdown arrow -->
+    app:dropdownMode="false"                       <!-- true = disables keyboard, shows dropdown arrow -->
     app:dropdownBackground="@color/white"          <!-- Background color of the dropdown popup card -->
     app:dropdownItemTextColor="@color/black"       <!-- Text color of each dropdown item -->
     app:dropdownItemTextSize="15sp"                <!-- Font size of each dropdown item text -->
@@ -153,6 +153,34 @@ input.setWarningText("Warning message");
 
 // Show error message (red state)
 input.setErrorText("Error message");
+
+// Add dropdown items
+input.addDropdownItem("Lable", "Value");
+// Add items with icon
+input.addDropdownItem("Iran", "IR", R.drawable.ic_flag_ir);
+
+// Handle item selection
+input.setOnDropdownItemSelectedListener(new CustomInputEdit.OnDropdownItemSelectedListener() {
+    @Override
+    public void onItemSelected(DropdownItem dropdownItem, int position) {
+        // Save selected gender value
+       TextView text = dropdownItem.value;
+    }
+});
+
+// Set items from a list
+List<DropdownItem> items = new ArrayList<>();
+items.add(new DropdownItem("Iran", "IR"));
+items.add(new DropdownItem("Germany", "DE"));
+dropdown.setDropdownItems(items);
+
+// Get selected value
+String selectedValue = dropdown.getSelectedValue();
+DropdownItem selectedItem = dropdown.getSelectedDropdownItem();
+
+// Select item programmatically
+dropdown.setSelectedValue("IR");
+
 ```
 ---
 
@@ -183,6 +211,17 @@ class MainActivity : AppCompatActivity() {
 
         // Show error
         emailInput.setErrorText("Invalid email address")
+
+        val dropdown = findViewById<CustomInputEdit>(R.id.countryDropdown)
+
+        dropdown.addDropdownItem("Iran", "IR", R.drawable.ic_flag_ir)
+        dropdown.addDropdownItem("Germany", "DE")
+
+        dropdown.setOnDropdownItemSelectedListener { item, position ->
+              Toast.makeText(this, "Selected: ${item.label}", Toast.LENGTH_SHORT).show()
+         }
+
+        val selected = dropdown.getSelectedValue()
     }
 }
 ```
@@ -220,7 +259,18 @@ class MainActivity : AppCompatActivity() {
 | inputSize | Text size for input field |
 | helperFamily | Font family for helper/warning/error texts |
 | helperSize | Text size for helper/warning/error texts |
-
+| dropdownMode | Enable dropdown mode (true/false) |
+| dropdownBackground | Background of the dropdown menu |
+| dropdownItemTextColor | Text color of dropdown items |
+| dropdownItemTextSize | Text size of dropdown items |
+| dropdownItemFamily | Font family of dropdown items |
+| dropdownItemIcon | Icon shown beside each dropdown item |
+| dropdownArrowIcon | Arrow icon for the dropdown field |
+| dropdownSelectedColor | Color of the selected dropdown item |
+| dropdownDividerColor | Divider color between dropdown items |
+| dropdownItemHeight | Height of each dropdown item |
+| dropdownMaxHeight | Maximum height of the dropdown list |
+| buttonMode | Enable button mode (true/false) |
 ---
 
 ##  Input Types
@@ -240,7 +290,23 @@ app:rightDirection="true"
 ```
 
 ---
+##  Dropdown
+```xml
 
+    app:dropdownMode="false"                       <!-- true = disables keyboard, shows dropdown arrow -->
+    app:dropdownBackground="@color/white"          <!-- Background color of the dropdown popup card -->
+    app:dropdownItemTextColor="@color/black"       <!-- Text color of each dropdown item -->
+    app:dropdownItemTextSize="15sp"                <!-- Font size of each dropdown item text -->
+    app:dropdownItemFamily="@font/vazirmatn"       <!-- Font applied to dropdown item texts -->
+    app:dropdownItemIcon="@drawable/ic_list_item"  <!-- Default icon for items that have no custom icon -->
+    app:dropdownSelectedColor="@color/primary"     <!-- Highlight color for the currently selected item -->
+    app:dropdownDividerColor="@color/gray_light"   <!-- Color of the divider line between items -->
+    app:dropdownItemHeight="52dp"                  <!-- Height of each individual dropdown item row -->
+    app:dropdownMaxHeight="220dp"                  <!-- Max height of the dropdown popup before it scrolls -->
+
+```
+
+---
 ##  License
 This project is licensed under the MIT License.
 
