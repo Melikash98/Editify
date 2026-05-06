@@ -394,15 +394,14 @@ public class CustomInputEdit extends ConstraintLayout {
     }
 
     /**
-     * Applies custom font to a TextView.
-     * Supports both @font/ resource and font family name string.
-     * Falls back to layout default if no font is provided.
+     * Resolves a custom typeface from XML attributes.
+     * Supports both font resources and font family names.
      */
 
     private Typeface resolveFontFromAttrs(Context context, @Nullable AttributeSet attrs, int styleableAttrIndex) {
         if (attrs == null) return null;
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField); // ✅ درست
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomInputField);
         try {
             int fontResId = a.getResourceId(styleableAttrIndex, 0);
             if (fontResId != 0) {
@@ -490,7 +489,7 @@ public class CustomInputEdit extends ConstraintLayout {
             enforcePasswordInputType(false);
 
             iconPass.setVisibility(View.VISIBLE);
-            iconPass.setImageDrawable(passHideDrawable); // آیکون چشم بسته
+            iconPass.setImageDrawable(passHideDrawable);
             iconPass.setColorFilter(passIconColor, PorterDuff.Mode.SRC_IN);
             iconPass.setOnClickListener(v -> togglePasswordVisibility());
         } else {
@@ -515,7 +514,10 @@ public class CustomInputEdit extends ConstraintLayout {
 
         safeSetSelectionToEnd();
     }
-
+    /**
+     * Applies the correct password / visible-password input type
+     * based on the current visibility state.
+     */
     private void enforcePasswordInputType(boolean visible) {
         int currentType = editInput.getInputType();
         int typeClass = currentType & InputType.TYPE_MASK_CLASS;
@@ -531,7 +533,11 @@ public class CustomInputEdit extends ConstraintLayout {
                     : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD | extraFlags);
         }
     }
-
+    /**
+     * Safely moves the cursor to the end of the current text.
+     * This is especially important after changing inputType,
+     * since Android may reset selection state.
+     */
     private void safeSetSelectionToEnd() {
         post(() -> {
             try {
@@ -745,51 +751,86 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    // External focus listener that can still be attached from outside
     private OnFocusChangeListener outerFocusChangeListener;
 
+    /**
+     * Returns the underlying EditText instance for advanced customization.
+     */
     public AppCompatEditText getEditText() {
         return editInput;
     }
 
+    /**
+     * Returns the current raw text without trimming.
+     */
     public String getRawText() {
         return editInput.getText() != null ? editInput.getText().toString() : "";
     }
 
+    /**
+     * CharSequence overload for text assignment.
+     */
     public void setText(CharSequence text) {
         editInput.setText(text);
         isActive = !TextUtils.isEmpty(text);
         updateUIState();
     }
 
+    /**
+     * Appends text to the existing content.
+     */
     public void append(CharSequence text) {
         editInput.append(text);
     }
 
+    /**
+     * Adds a TextWatcher to the internal input field.
+     */
     public void addTextChangedListener(TextWatcher watcher) {
         editInput.addTextChangedListener(watcher);
     }
 
+    /**
+     * Removes a previously registered TextWatcher.
+     */
     public void removeTextChangedListener(TextWatcher watcher) {
         editInput.removeTextChangedListener(watcher);
     }
 
+    /**
+     * Overrides the focus listener so the component can keep
+     * an external callback without losing its own focus logic.
+     */
     @Override
     public void setOnFocusChangeListener(OnFocusChangeListener l) {
         outerFocusChangeListener = l;
     }
 
+    /**
+     * Requests keyboard focus on the internal input field.
+     */
     public void requestInputFocus() {
         editInput.requestFocus();
     }
 
+    /**
+     * Clears focus from the internal input field.
+     */
     public void clearInputFocus() {
         editInput.clearFocus();
     }
 
+    /**
+     * Returns whether the internal input field currently has focus.
+     */
     public boolean isInputFocused() {
         return editInput.isFocused();
     }
 
+    /**
+     * Shows the soft keyboard and focuses the input.
+     */
     public void showKeyboard() {
         editInput.requestFocus();
         InputMethodManager imm = (InputMethodManager)
@@ -798,6 +839,9 @@ public class CustomInputEdit extends ConstraintLayout {
             imm.showSoftInput(editInput, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    /**
+     * Hides the soft keyboard from the input field.
+     */
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -805,6 +849,9 @@ public class CustomInputEdit extends ConstraintLayout {
             imm.hideSoftInputFromWindow(editInput.getWindowToken(), 0);
     }
 
+    /**
+     * Forwards IME options to the internal EditText.
+     */
     public void setImeOptions(int imeOptions) {
         editInput.setImeOptions(imeOptions);
     }
@@ -813,10 +860,16 @@ public class CustomInputEdit extends ConstraintLayout {
         return editInput.getImeOptions();
     }
 
+    /**
+     * Registers an editor action listener on the input field.
+     */
     public void setOnEditorActionListener(TextView.OnEditorActionListener listener) {
         editInput.setOnEditorActionListener(listener);
     }
 
+    /**
+     * Updates the input type and refreshes password handling if needed.
+     */
     public void setInputType(int type) {
         originalInputType = type;
         editInput.setInputType(type);
@@ -828,6 +881,9 @@ public class CustomInputEdit extends ConstraintLayout {
         return editInput.getInputType();
     }
 
+    /**
+     * Exposes filter configuration directly to callers.
+     */
     public void setFilters(InputFilter[] filters) {
         editInput.setFilters(filters);
     }
@@ -856,6 +912,9 @@ public class CustomInputEdit extends ConstraintLayout {
         return editInput.getSelectionEnd();
     }
 
+    /**
+     * Convenience method to move the cursor to the end.
+     */
     public void setSelectionToEnd() {
         safeSetSelectionToEnd();
     }
@@ -930,6 +989,10 @@ public class CustomInputEdit extends ConstraintLayout {
         return editInput.getKeyListener();
     }
 
+    /**
+     * Applies single-line or multiline behavior based on the provided configuration.
+     * Also adds multiline flags where appropriate without breaking special input modes.
+     */
     private void applyMultilineConfig(boolean singleLine, int minLines, int maxLines) {
         if (singleLine) {
             editInput.setSingleLine(true);
@@ -967,6 +1030,10 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    /**
+     * Enables dropdown behavior when the mode is active.
+     * The field becomes non-editable and opens a custom dropdown menu on click.
+     */
     private void setupDropdown() {
         if (!isDropdownMode) {
             iconDropdown.setVisibility(View.GONE);
@@ -994,6 +1061,9 @@ public class CustomInputEdit extends ConstraintLayout {
         iconDropdown.setOnClickListener(v -> toggleDropdown());
     }
 
+    /**
+     * Opens or closes the dropdown depending on the current state.
+     */
     private void toggleDropdown() {
         if (isDropdownOpen) {
             closeDropdown();
@@ -1002,6 +1072,9 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    /**
+     * Displays the dropdown, rebuilds its content, and animates it into view.
+     */
     private void openDropdown() {
         if (dropdownItems.isEmpty()) return;
 
@@ -1046,6 +1119,9 @@ public class CustomInputEdit extends ConstraintLayout {
         dropdownContainer.bringToFront();
     }
 
+    /**
+     * Hides the dropdown and restores the normal compact state.
+     */
     private void closeDropdown() {
         isDropdownOpen = false;
         if (selectedDropdownItem == null) {
@@ -1070,6 +1146,10 @@ public class CustomInputEdit extends ConstraintLayout {
                 .start();
     }
 
+    /**
+     * Recreates dropdown item views from the current dataset.
+     * This method is called whenever the dropdown opens or its data changes.
+     */
     private void rebuildDropdownItems() {
         dropdownList.removeAllViews();
         Context ctx = getContext();
@@ -1143,6 +1223,10 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    /**
+     * Marks a dropdown item as selected, updates the field text,
+     * and notifies the external listener.
+     */
     private void selectDropdownItem(DropdownItem item, int position) {
         selectedDropdownItem = item;
 
@@ -1157,11 +1241,17 @@ public class CustomInputEdit extends ConstraintLayout {
         }
     }
 
+    /**
+     * Utility helper used to generate translucent background effects.
+     */
     private int adjustAlpha(int color, float factor) {
         int alpha = Math.round(Color.alpha(color) * factor);
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
     }
 
+    /**
+     * Converts SP to PX for text sizing.
+     */
     private float sp(float value) {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_SP,
@@ -1170,7 +1260,9 @@ public class CustomInputEdit extends ConstraintLayout {
         );
     }
 
-    // ==================== Dropdown Public API ====================
+    /**
+     * Dropdown Public API
+     */
     public void setDropdownItems(List<DropdownItem> items) {
         dropdownItems.clear();
         if (items != null) dropdownItems.addAll(items);
@@ -1244,6 +1336,11 @@ public class CustomInputEdit extends ConstraintLayout {
         return isDropdownOpen;
     }
 
+    /**
+     *  Button mode
+     *  When enabled, the input behaves like a clickable control
+     *  instead of accepting text input.
+     */
     private void setupButtonMode() {
         if (!isButtonMode) return;
         if (isDropdownMode) return;

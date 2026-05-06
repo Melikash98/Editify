@@ -2,6 +2,15 @@ package com.melikash98.editify;
 
 import android.graphics.drawable.Drawable;
 
+
+/**
+ * Represents a single selectable item used by the dropdown component.
+ *
+ * This model keeps the data structure intentionally simple and flexible:
+ * a visible label for display, an optional value for internal logic or persistence,
+ * and an optional icon for richer presentation inside the dropdown list.
+ */
+
 public class DropdownItem {
     public final String label;
     public final String value;
