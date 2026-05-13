@@ -3,7 +3,9 @@
 # Editify
 
 [![](https://jitpack.io/v/Melikash98/Editify.svg)](https://jitpack.io/#Melikash98/Editify)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Melikash98/Editify/blob/main/LICENSE)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg)](https://android-arsenal.com/api?level=21)
+[![Platform](https://img.shields.io/badge/platform-Android-orange.svg)](https://developer.android.com)
 
 **A beautiful and lightweight Material-style EditText library with smooth floating hint animation.**
 
